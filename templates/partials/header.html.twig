@@ -2,29 +2,30 @@
     <header>
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">Webpost</a>
+                <a class="navbar-brand" href="#">Formation</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="{{ path('app_home') }}">Accueil</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('app_about') }}">About</a>
+                            <a class="nav-link active" aria-current="page" href="{{ path('app_home') }}">Home</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Les articles
+                                Courses
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ path('app_posts') }}">Tout</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_courses') }}">Tout</a></li>
                                 {{ render(controller(
                                     'App\\Controller\\CategoryController::categories'
                                 )) }}
                             </ul>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_news') }}">News</a>
+                        </li>
+
                         <li class="nav-item">
                             <a class="nav-link" href="">Contact</a>
                         </li>
@@ -37,7 +38,7 @@
             </div>
         </nav>
 
-        <div class="banner"></div>
+
     </header>
 {% endblock %}
 

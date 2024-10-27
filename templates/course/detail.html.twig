@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container g-0">
+        <h1>{{ course.name }}</h1>
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" data-bs-toggle="tab" href="#profil" aria-selected="true" role="tab">Profile</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" data-bs-toggle="tab" href="#detail" aria-selected="true" role="tab">Détail</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" data-bs-toggle="tab" href="#commentaires" aria-selected="true" role="tab">Commentaires</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" data-bs-toggle="tab" href="#posterCommentaire" aria-selected="true" role="tab">Postez un commentaire</a>
+            </li>
+
+        </ul>
+        <div id="myTabContent" class="tab-content">
+            <div class="tab-pane fade active show" id="profil" role="tabpanel">
+                <div class="row mx-5 my-4">
+                    <div class="col-md-4">
+                        <img src="{{ (course.image != null)?course.image : asset('images/cours/default.jpg') }}" class="img-fluid rounded-start" alt="{{ course.name }}">
+                    </div>
+                    <div class="col-md-8">
+                        <h3>Description</h3>
+                        <p>{{ course.smallDescription|nl2br }}</p>
+                        <h3>Informations</h3>
+                        {% if course.price != null %}
+                            <p>Prix: {{ course.price }} €</p>
+                        {% else %}
+                            <p>Prix: gratuit </p>
+                        {% endif %}
+                        <p>Durée: {{ course.duration }}</p>
+                        <p>Ajouté le: {{ course.createdAt|date('d/m/Y') }}</p>
+                        <p>Horaire: {{ course.program }} </p>
+                        <p>Niveau: {{ course.level.name }}</p>
+                    </div>
+
+                </div>
+            </div>
+            <div class="tab-pane fade" id="detail" role="tabpanel">
+                <p>Descrition complète</p>
+                <p>{{ course.fullDescription|nl2br }}</p>
+                <a href="{{ asset('programme/' ~ course.program) }}" type="button" class="btn btn-danger rounded-1">Télécharger le programme</a>
+            </div>
+            <div class="tab-pane fade" id="commentaires">
+                <p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony. Leggings gentrify squid 8-bit cred pitchfork.</p>
+            </div>
+            <div class="tab-pane fade" id="posterCommentaire">
+                <p>Trust fund seitan letterpress, keytar raw denim keffiyeh etsy art party before they sold out master cleanse gluten-free squid scenester freegan cosby sweater. Fanny pack portland seitan DIY, art party locavore wolf cliche high life echo park Austin. Cred vinyl keffiyeh DIY salvia PBR, banh mi before they sold out farm-to-table VHS viral locavore cosby sweater.</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -2,8 +2,7 @@
 
 namespace App\Controller;
 
-use App\Repository\CategoryRepository;
-use App\Repository\PostRepository;
+use App\Repository\CourseRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -11,15 +10,15 @@ use Symfony\Component\Routing\Attribute\Route;
 class HomeController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
-    public function home(PostRepository $repository,): Response
+    public function home(CourseRepository $repository,): Response
     {
-        $posts = $repository->findBy(
-            ['isPublished'=> true],
-            ['createdAt' => 'DESC'],
+        $courses = $repository->findBy(
+            ['is_published'=> true],
+            ['created_at' => 'DESC'],
             3
         );
         return $this->render('home/index.html.twig', [
-            'posts' => $posts,
+            'courses' => $courses,
         ]);
     }
 }

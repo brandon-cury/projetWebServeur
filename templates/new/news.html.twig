@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}News{% endblock %}
+
+{% block body %}
+
+<div class="example-wrapper">
+
+    <div class="container g-0">
+        <h1>Nos dernières actualités</h1>
+        <div class="row g-2">
+            {% for new in news %}
+                <div class="col-sm-12 col-md-6 col-lg-4">
+                    <div class="card" style="max-width: 540px;">
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                <img src="{{ (new.image != null)?new.image : asset('images/news/default.png') }}" class="img-fluid rounded-start" alt="{{ new.name }}">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ new.name }} - {{ new.createdAt|date('d/m/Y') }}</h5>
+                                    <p class="card-text">{{ new.content|u.truncate(100, '...', false) }}</p>
+                                    <p class="card-text text-end"><small><a href="" class="text-danger text-decoration-none" data-bs-toggle="modal" data-bs-target="#{{ new.slug }}">lire la suite...</a></small></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="{{ new.slug }}" tabindex="-1" aria-labelledby="{{ new.slug }}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">{{ new.name }}</font></font></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer">
+                                    <span aria-hidden="true"></span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <img src="{{ (new.image != null)?new.image : asset('images/news/default.png') }}" class="img-fluid rounded-start" alt="{{ new.name }}">
+                                    </div>
+                                    <div class="col-md-8">
+                                        <p class="card-text">{{ new.content }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Close</font></font></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+        <div class="d-flex justify-content-center mt-2">
+            {{ knp_pagination_render(news) }}
+        </div>
+
+    </div>
+</div>
+{% endblock %}

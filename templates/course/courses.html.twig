@@ -1,24 +1,24 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Posts{% endblock %}
 
 {% block body %}
     <main class="container">
-        <section id="posts">
+        <section id="courses">
             <div class="row">
                 <div class="col-md-12">
-                    <h1 class="display-6">Nos derniers cours</h1>
+                    <h1 class="display-6">Tout nos cours</h1>
 
                     {% for course in courses %}
                         <div class="card mb-5">
                             <div class="row g-0">
                                 <div class="col-md-4">
-                                    <img src="{{  course.image }}" class="img-fluid rounded-start" alt="{{ course.name }}">
+                                    <img src="{{ (course.image != null)?course.image : asset('images/cours/default.jpg') }}" class="img-fluid rounded-start" alt="{{ course.name }}">
                                 </div>
                                 <div class="col-md-8">
                                     <div class="card-body">
                                         <p>Categorie : {{ course.category.name }}</p>
-
+                                        <p>Niveau : {{ course.level.name }}</p>
                                         <h5 class="card-title">{{ course.name|capitalize }}</h5>
 
                                         <p class="card-text">{{ course.smallDescription|u.truncate(100, '...', false) }}...</p>
@@ -34,7 +34,9 @@
 
                 </div>
             </div>
+            <div class="d-flex justify-content-center">
+                {{ knp_pagination_render(courses) }}
+            </div>
         </section>
     </main>
-
 {% endblock %}
