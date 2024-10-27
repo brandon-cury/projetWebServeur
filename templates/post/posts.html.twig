@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Posts{% endblock %}
+
+{% block body %}
+    <main class="container">
+        <section id="posts">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="display-6">Tout nos articles</h1>
+
+                    {% for post in posts %}
+                        <div class="card mb-5">
+                            <div class="row g-0">
+                                <div class="col-md-4">
+                                    <img src="{{ asset('images/posts/' ~ post.image)}}" class="img-fluid rounded-start" alt="{{ post.title }}">
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <p>Categorie : {{ post.category.name }}</p>
+                                        <p>Ecrit par : {{ post.user.firstName }} {{ post.user.lastName }}</p>
+                                        <h5 class="card-title">{{ post.title|capitalize }}</h5>
+
+                                        <p class="card-text">{{ post.content|u.truncate(100, '...', false) }}...</p>
+
+                                        <p>{{ post.createdAt|date('d/m/Y') }}</p>
+
+                                        <p class="card-text"><a href="{{ path('app_post', {id: post.id}) }}" class="btn btn-secondary">Lire la suite</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock %}

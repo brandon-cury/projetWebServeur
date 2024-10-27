@@ -1,0 +1,47 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+<main class="container">
+    <section id="row">
+        <div class="col-md-10 offset-1">
+            <h1 class="display-4">Gestion des articles</h1>
+            <a href="{{ path('app_admin_newpost') }}" class="btn btn-outline-dark">Ajouter un article</a>
+            <table class="table table-hover my-5 table-striped">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Title</th>
+                        <th>Date</th>
+                        <th>Catégorie</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                        <th>Published</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for post in posts %}
+                    <tr>
+                        <td><img  src="{{ asset('images/posts/' ~ post.image) }}" alt="{{ post.title }}"></td>
+                        <td>{{ post.title }}</td>
+                        <td>{{ post.createdAt|date('d/m/y') }}</td>
+                        <td>{{ post.category.name }}</td>
+                        <td><a href="{{ path('app_admin_editpost', {id: post.id}) }}"><i class="icofont-edit-alt"></i></a></td>
+                        <td><a href="{{ path('app_admin_delpost', {id: post.id}) }}" class="text-danger"><i class="icofont-trash"></i></a></td>
+                        <td><a href="{{ path('app_admin_eyepost', {id: post.id}) }}">
+
+                                {% if post.isPublished %}
+                                    <i class="icofont-eye text-success"></i>
+                                {% else %}
+                                    <i class="icofont-eye-blocked text-danger"></i>
+                                {% endif %}
+                            </a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+{% endblock %}
