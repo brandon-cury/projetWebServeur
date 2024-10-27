@@ -29,10 +29,11 @@ class UserFixtures extends Fixture
                 ->setDisabled($faker->boolean(10))
                 ->setCreatedAt(new \DateTimeImmutable())
                 ->setUpdatedAt(new \DateTimeImmutable())
+                ->setLastLogAt(new \DateTimeImmutable())
                 ->setRoles(['ROLE_USER'])
                 ->setPassword($this->hasher->hashPassword($user, 'password'));
                 $gender = ($gender == 'male') ? 'm' : 'f';
-                $user->setImageName('0'.($i + 10). $gender. '.jpg');
+                $user->setImage('0'.($i + 10). $gender. '.jpg');
                 $manager->persist($user);
         }
         $manager->flush();

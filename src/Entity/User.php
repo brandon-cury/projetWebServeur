@@ -160,12 +160,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getImage(): ?string
     {
-        return $this->imageName;
+        return $this->image;
     }
 
     public function setImage(?string $imageName): static
     {
-        $this->imageName = $imageName;
+        $this->image = $imageName;
 
         return $this;
     }
