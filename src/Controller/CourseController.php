@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\Course;
+use App\Form\CommentType;
 use App\Repository\CategoryRepository;
 use App\Repository\CourseRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,13 +32,19 @@ class CourseController extends AbstractController
 
 
     #[Route('/course/{slug}', name: 'app_course')]
-    public function course(string $slug, CourseRepository $repository): Response
+    public function course(string $slug, CourseRepository $repository, Request $request): Response
     {
-        $course = $repository->findBy(
+        $course = $repository->findOneBy(
             ['slug'=> $slug]
-        )[0];
+        );
+        //formulaire de commentaire
+        $comment = new Comment();
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+
         return $this->render('course/detail.html.twig', [
             'course' => $course,
+            'form' => $form->createView()
         ]);
     }
     #[Route('/posts/{category}', name: 'app_post_category')]

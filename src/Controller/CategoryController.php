@@ -15,6 +15,7 @@ class CategoryController extends AbstractController
             [],
             ['name'=>'ASC'],
         );
+
         return $this->render('partials/categories.html.twig', [
             "categories" => $categories,
         ]);
