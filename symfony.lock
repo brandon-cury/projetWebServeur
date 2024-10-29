@@ -1,4 +1,7 @@
 {
+    "boruta/star-rating-bundle": {
+        "version": "7.0.0"
+    },
     "doctrine/doctrine-bundle": {
         "version": "2.13",
         "recipe": {

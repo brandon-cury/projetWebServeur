@@ -4,8 +4,70 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a459a61fc64b333976e26b0fd07e549a",
+    "content-hash": "4001df15f050058b857ccf451aee5812",
     "packages": [
+        {
+            "name": "boruta/star-rating-bundle",
+            "version": "7.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/borutainfo/star-rating-bundle.git",
+                "reference": "b4ad7198dc08c2104a606d1aaf0f63a9bbe26015"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/borutainfo/star-rating-bundle/zipball/b4ad7198dc08c2104a606d1aaf0f63a9bbe26015",
+                "reference": "b4ad7198dc08c2104a606d1aaf0f63a9bbe26015",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2",
+                "twig/twig": ">=3.8"
+            },
+            "require-dev": {
+                "symfony/framework-bundle": ">=7.0"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "Boruta\\StarRatingBundle\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian Boruta",
+                    "email": "sebastian@boruta.info"
+                },
+                {
+                    "name": "Brokoskokoli",
+                    "email": "brokoskokoli@gmail.com"
+                },
+                {
+                    "name": "Derick Felsman",
+                    "email": "derickfelsman@gmail.com"
+                },
+                {
+                    "name": "Steven Ng"
+                }
+            ],
+            "description": "Star Rating Bundle for Symfony 7.",
+            "homepage": "https://github.com/borutainfo/StarRatingBundle",
+            "keywords": [
+                "Rating",
+                "bundle",
+                "star",
+                "symfony",
+                "symfony7"
+            ],
+            "support": {
+                "source": "https://github.com/borutainfo/star-rating-bundle/tree/7.0.0"
+            },
+            "time": "2024-05-25T20:07:51+00:00"
+        },
         {
             "name": "cocur/slugify",
             "version": "v4.6.0",

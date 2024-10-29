@@ -42,6 +42,9 @@ class Comment
     #[ORM\Column]
     private ?bool $is_published = null;
 
+    #[ORM\Column]
+    private ?float $rating = null;
+
     public function __construct()
     {
         $this->replies = new ArrayCollection();
@@ -150,6 +153,18 @@ class Comment
     public function setPublished(bool $is_published): static
     {
         $this->is_published = $is_published;
+
+        return $this;
+    }
+
+    public function getRating(): ?float
+    {
+        return $this->rating;
+    }
+
+    public function setRating(float $rating): static
+    {
+        $this->rating = $rating;
 
         return $this;
     }

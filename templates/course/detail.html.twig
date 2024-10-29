@@ -49,15 +49,24 @@
             <div class="tab-pane fade" id="commentaires">
                 <div class="mx-5 my-4">
                     <h3>Commentaires des abonnés</h3>
-                    {% for comment in course.comments|filter(comment => comment.parent is null) %}
+                    {% set sorted_comments = course.comments|sort((a, b) => b.createdAt <=> a.createdAt) %}
+                    {% for comment in sorted_comments|filter(comment => comment.parent is null) %}
                     <div class="d-flex mt-4">
                         <img style="width: 70px; height: 70px;margin-right: 20px" src="{{ (comment.user.image != null)? asset('images/avatar/' ~ comment.user.image) : asset('images/news/default.png') }}" class="img-fluid rounded-circle" alt="{{ comment.user.lastName }}">
                         <div class="border-bottom w-100">
                             <h5>{{ comment.createdAt|date('d/m/Y') }} - {{ comment.user.lastName }}</h5>
                             <div class="textEditor">{{ comment.content|raw }}</div>
-                            <p class="my-2"><small>Evaluation de {{ comment.user.lastName }}: ...</small></p>
+                            <p class="my-2"><small>Evaluation de {{ comment.user.lastName }}:
+                                    {% for i in 1..5 %}
+                                        {% if i<=  comment.rating %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="1.4rem" height="3rem" viewBox="0 0 24 24"><path fill="#dada10" d="m12 18.26l-7.053 3.948l1.575-7.928L.588 8.792l8.027-.952L12 .5l3.385 7.34l8.027.952l-5.934 5.488l1.575 7.928z"/></svg>
+                                        {% else %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="1.4rem" height="3rem" viewBox="0 0 24 24"><path fill="black" d="m12 18.26l-7.053 3.948l1.575-7.928L.588 8.792l8.027-.952L12 .5l3.385 7.34l8.027.952l-5.934 5.488l1.575 7.928zm0-2.292l4.247 2.377l-.948-4.773l3.573-3.305l-4.833-.573l-2.038-4.419l-2.039 4.42l-4.833.572l3.573 3.305l-.948 4.773z"/></svg>
+                                        {% endif %}
+                                    {% endfor %}
+                                </small></p>
                             {% if comment.user != app.user %}
-                            <button type="button" data-reply data-id="{{ comment.id }}" class="btn btn-info btn-sm">Répondre</button>
+                                <button type="button" data-reply data-id="{{ comment.id }}" class="btn btn-info btn-sm">Répondre</button>
                             {% else %}
                                 <button type="button" data-update data-id="{{ comment.id }}" class="btn btn-warning btn-sm">Modifier</button>
                             {% endif %}
@@ -72,7 +81,18 @@
                                 <div class="border-bottom w-100">
                                     <h5>{{ reply.createdAt|date('d/m/Y') }} - {{ reply.user.lastName }}</h5>
                                     <div class="textEditor">{{ reply.content|raw }}</div>
-                                    <p class="my-2"><small>Evaluation de {{ reply.user.lastName }}: ...</small></p>
+                                    <p class="my-2">
+                                        <small>
+                                            Evaluation de {{ reply.user.lastName }}:
+                                            {% for i in 1..5 %}
+                                                {% if i<=  reply.rating %}
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="1.4rem" height="3rem" viewBox="0 0 24 24"><path fill="#dada10" d="m12 18.26l-7.053 3.948l1.575-7.928L.588 8.792l8.027-.952L12 .5l3.385 7.34l8.027.952l-5.934 5.488l1.575 7.928z"/></svg>
+                                                {% else %}
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="1.4rem" height="3rem" viewBox="0 0 24 24"><path fill="black" d="m12 18.26l-7.053 3.948l1.575-7.928L.588 8.792l8.027-.952L12 .5l3.385 7.34l8.027.952l-5.934 5.488l1.575 7.928zm0-2.292l4.247 2.377l-.948-4.773l3.573-3.305l-4.833-.573l-2.038-4.419l-2.039 4.42l-4.833.572l3.573 3.305l-.948 4.773z"/></svg>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </small>
+                                    </p>
                                     {% if reply.user == app.user %}
                                         <button type="button" data-update data-id="{{ reply.id }}" class="btn btn-warning btn-sm">Modifier</button>
                                     {% endif %}
@@ -87,7 +107,17 @@
             <div class="tab-pane fade" id="posterCommentaire">
 
                 <div class="mt-2">
-                    {{ form_start(form)}}
+                    <div>
+                        {% for i in 1..5 %}
+                            {% if i<=  ratings.actifs %}
+                                <svg xmlns="http://www.w3.org/2000/svg" width="3rem" height="3rem" viewBox="0 0 24 24"><path fill="#dada10" d="m12 18.26l-7.053 3.948l1.575-7.928L.588 8.792l8.027-.952L12 .5l3.385 7.34l8.027.952l-5.934 5.488l1.575 7.928z"/></svg>
+                            {% else %}
+                                <svg xmlns="http://www.w3.org/2000/svg" width="3rem" height="3rem" viewBox="0 0 24 24"><path fill="black" d="m12 18.26l-7.053 3.948l1.575-7.928L.588 8.792l8.027-.952L12 .5l3.385 7.34l8.027.952l-5.934 5.488l1.575 7.928zm0-2.292l4.247 2.377l-.948-4.773l3.573-3.305l-4.833-.573l-2.038-4.419l-2.039 4.42l-4.833.572l3.573 3.305l-.948 4.773z"/></svg>
+                            {% endif %}
+                        {% endfor %}
+                        <p>calculé sur {{ ratings.numbers }} commentaires</p>
+                    </div>
+                    {{ form_start(form) }}
                     {{ form_widget(form) }}
                     <label for="{{ form.content.vars.id }}" class="my-2">laissez un commentaire:</label>
                     <trix-editor input="{{ form.content.vars.id }}" class="trix-content" required></trix-editor>

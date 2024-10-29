@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Comment;
+use Boruta\StarRatingBundle\Form\StarRatingType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -23,6 +24,7 @@ class CommentType extends AbstractType
             ->add('updateId', HiddenType::class, [
                 'mapped' => false
             ])
+            ->add('rating', StarRatingType::class, [])
         ;
     }
 

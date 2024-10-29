@@ -37,9 +37,24 @@ class CourseController extends AbstractController
     #[Route('/course/{slug}', name: 'app_course')]
     public function course(string $slug, CourseRepository $repository, EntityManagerInterface $manager, Request $request, Security $security): Response
     {
+
         $course = $repository->findOneBy(
             ['slug'=> $slug]
         );
+        $comments = $course->getComments();
+        //comtage du nombre d'étoile
+        $rating = 0;
+        $comments_count = count($comments);
+        foreach ($comments as $comment){
+            $rating += $comment->getRating();
+        };
+        $ratings_active = ceil($rating/$comments_count);
+        $ratings= [
+            'actifs' => $ratings_active,
+            'numbers' => $comments_count
+        ];
+
+
         if(!$course){
             throw new NotFoundHttpException('Pas de cours trouvé');
         }
@@ -48,6 +63,7 @@ class CourseController extends AbstractController
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
         $user = $security->getUser();
+
         if($form->isSubmitted() && $form->isValid()){
             if(!$user){
                 return $this->redirectToRoute('app_admin_category');
@@ -75,7 +91,8 @@ class CourseController extends AbstractController
                 $comment2 = $manager->getRepository(Comment::class)->find($updateId);
                 if($user->getId() == $comment2->getUser()->getId()){
 
-                    $comment2->setContent($form->get('content')->getData());
+                    $comment2->setContent($form->get('content')->getData())
+                            ->setRating($form->get('rating')->getData());
                     $manager->persist($comment2);
                     $manager->flush();
                     $this->addFlash('success', 'Votre commentaire à été modifié avec sucès');
@@ -87,7 +104,8 @@ class CourseController extends AbstractController
 
         return $this->render('course/detail.html.twig', [
             'course' => $course,
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'ratings' => $ratings
         ]);
     }
     #[Route('/posts/{category}', name: 'app_post_category')]
