@@ -51,7 +51,15 @@
             </div>
             <div class="tab-pane fade" id="posterCommentaire">
 
-                {{ form_widget(form.content) }}
+                <div class="mt-2">
+                    {{ form_start(form)}}
+                    {{ form_widget(form) }}
+                    <label for="{{ form.content.vars.id }}" class="my-2">laissez un commentaire:</label>
+
+                    <trix-editor input="{{ form.content.vars.id }}" class="trix-content" required></trix-editor>
+                    {{ form_end(form)}}
+                    <div class="trix-content"></div>
+                </div>
             </div>
         </div>
     </div>
