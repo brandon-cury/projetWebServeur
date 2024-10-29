@@ -16,28 +16,31 @@ class Comment
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::TEXT)]
-    private ?string $content = null;
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'replies')]
+    private ?self $parent = null;
 
-    #[ORM\ManyToOne(inversedBy: 'comments')]
+    /**
+     * @var Collection<int, self>
+     */
+    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
+    private Collection $replies;
+
+    #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?course $course = null;
+    private ?Course $course = null;
 
-    #[ORM\ManyToOne(inversedBy: 'comments')]
+    #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?user $user = null;
-
-    #[ORM\Column]
-    private ?bool $is_published = null;
+    private ?User $user = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
-    /**
-     * @var Collection<int, Comment>
-     */
-    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'parent')]
-    private Collection $replies;
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $content = null;
+
+    #[ORM\Column]
+    private ?bool $is_published = null;
 
     public function __construct()
     {
@@ -49,50 +52,68 @@ class Comment
         return $this->id;
     }
 
-    public function getContent(): ?string
+    public function getParent(): ?self
     {
-        return $this->content;
+        return $this->parent;
     }
 
-    public function setContent(string $content): static
+    public function setParent(?self $parent): static
     {
-        $this->content = $content;
+        $this->parent = $parent;
 
         return $this;
     }
 
-    public function getCourse(): ?course
+    /**
+     * @return Collection<int, self>
+     */
+    public function getReplies(): Collection
+    {
+        return $this->replies;
+    }
+
+    public function addReply(self $reply): static
+    {
+        if (!$this->replies->contains($reply)) {
+            $this->replies->add($reply);
+            $reply->setParent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReply(self $reply): static
+    {
+        if ($this->replies->removeElement($reply)) {
+            // set the owning side to null (unless already changed)
+            if ($reply->getParent() === $this) {
+                $reply->setParent(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCourse(): ?Course
     {
         return $this->course;
     }
 
-    public function setCourse(?course $course): static
+    public function setCourse(?Course $course): static
     {
         $this->course = $course;
 
         return $this;
     }
 
-    public function getUser(): ?user
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setUser(?user $user): static
+    public function setUser(?User $user): static
     {
         $this->user = $user;
-
-        return $this;
-    }
-
-    public function isPublished(): ?bool
-    {
-        return $this->is_published;
-    }
-
-    public function setPublished(bool $is_published): static
-    {
-        $this->is_published = $is_published;
 
         return $this;
     }
@@ -109,32 +130,26 @@ class Comment
         return $this;
     }
 
-    /**
-     * @return Collection<int, Comment>
-     */
-    public function getReplies(): Collection
+    public function getContent(): ?string
     {
-        return $this->replies;
+        return $this->content;
     }
 
-    public function addReply(Comment $reply): static
+    public function setContent(string $content): static
     {
-        if (!$this->replies->contains($reply)) {
-            $this->replies->add($reply);
-            $reply->setParent($this);
-        }
+        $this->content = $content;
 
         return $this;
     }
 
-    public function removeReply(Comment $reply): static
+    public function isPublished(): ?bool
     {
-        if ($this->replies->removeElement($reply)) {
-            // set the owning side to null (unless already changed)
-            if ($reply->getParent() === $this) {
-                $reply->setParent(null);
-            }
-        }
+        return $this->is_published;
+    }
+
+    public function setPublished(bool $is_published): static
+    {
+        $this->is_published = $is_published;
 
         return $this;
     }

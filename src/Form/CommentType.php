@@ -15,7 +15,12 @@ class CommentType extends AbstractType
     {
         $builder
             ->add('content', HiddenType::class, [])
-            ->add('repliesId', HiddenType::class, [
+
+            ->add('parentId', HiddenType::class, [
+                'mapped' => false
+            ])
+
+            ->add('updateId', HiddenType::class, [
                 'mapped' => false
             ])
         ;

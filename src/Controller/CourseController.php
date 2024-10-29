@@ -7,9 +7,12 @@ use App\Entity\Course;
 use App\Form\CommentType;
 use App\Repository\CategoryRepository;
 use App\Repository\CourseRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
 class CourseController extends AbstractController
@@ -32,15 +35,55 @@ class CourseController extends AbstractController
 
 
     #[Route('/course/{slug}', name: 'app_course')]
-    public function course(string $slug, CourseRepository $repository, Request $request): Response
+    public function course(string $slug, CourseRepository $repository, EntityManagerInterface $manager, Request $request, Security $security): Response
     {
         $course = $repository->findOneBy(
             ['slug'=> $slug]
         );
+        if(!$course){
+            throw new NotFoundHttpException('Pas de cours trouvé');
+        }
         //formulaire de commentaire
         $comment = new Comment();
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
+        $user = $security->getUser();
+        if($form->isSubmitted() && $form->isValid()){
+            if(!$user){
+                return $this->redirectToRoute('app_admin_category');
+            }
+            //verifier si c'est une insersion simple
+            $updateId = $form->get("updateId")->getData();
+            if(!$updateId){
+                //on recupere le parent id
+                $parantId = $form->get("parentId")->getData();
+                $parent = null;
+                if($parantId){
+                    $parent = $manager->getRepository(Comment::class)->find($parantId);
+                }
+                $comment->setCreatedAt(new \DateTimeImmutable())
+                    ->setCourse($course)
+                    ->setParent($parent)
+                    ->setPublished(false);
+                    $comment->setUser($user);
+                    $manager->persist($comment);
+                    $manager->flush();
+                    $this->addFlash('success', 'Votre commentaire à bien été enregistré');
+
+            }
+            else{
+                $comment2 = $manager->getRepository(Comment::class)->find($updateId);
+                if($user->getId() == $comment2->getUser()->getId()){
+
+                    $comment2->setContent($form->get('content')->getData());
+                    $manager->persist($comment2);
+                    $manager->flush();
+                    $this->addFlash('success', 'Votre commentaire à été modifié avec sucès');
+                }
+            }
+            return $this->redirectToRoute('app_course', ['slug'=> $course->getSlug()]);
+
+        }
 
         return $this->render('course/detail.html.twig', [
             'course' => $course,

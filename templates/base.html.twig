@@ -14,8 +14,17 @@
         {% endblock %}
     </head>
     <body>
-
         {% include 'partials/header.html.twig' %}
+        <div class="container">
+            {% for label, messages in app.flashes %}
+                <div class="alert alert-dismissible alert-{{ label }}">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    {% for message in messages %}
+                        <strong>Très bien!</strong> {{ message }}.
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
         {% block body %}{% endblock %}
     </body>
 </html>
