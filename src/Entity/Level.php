@@ -90,4 +90,9 @@ class Level
 
         return $this;
     }
+    //permet de selectionner le nom du niveau par defeaut lorsqu'on l'appel
+    public function __toString():string
+    {
+        return $this->getName();
+    }
 }

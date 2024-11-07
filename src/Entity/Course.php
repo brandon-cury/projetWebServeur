@@ -7,8 +7,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: CourseRepository::class)]
+#[Vich\Uploadable]
 class Course
 {
     #[ORM\Id]
@@ -42,7 +45,6 @@ class Course
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
-
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $program = null;
 
@@ -177,6 +179,7 @@ class Course
         return $this;
     }
 
+
     public function getProgram(): ?string
     {
         return $this->program;
@@ -242,5 +245,11 @@ class Course
 
         return $this;
     }
+    //permet de selectionner le nom du cours par defeaut lorsqu'on l'appel
+    public function __toString():string
+    {
+        return $this->getName();
+    }
+
 
 }

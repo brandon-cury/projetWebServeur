@@ -22,7 +22,7 @@
             <div class="tab-pane fade active show" id="profil" role="tabpanel">
                 <div class="row mx-5 my-4">
                     <div class="col-md-4">
-                        <img src="{{ (course.image != null)?course.image : asset('images/cours/default.jpg') }}" class="img-fluid rounded-start" alt="{{ course.name }}">
+                        <img src="{{ (course.image != null)? asset('images/cours/' ~ course.image) : asset('images/cours/default.jpg') }}" class="img-fluid rounded-start" alt="{{ course.name }}">
                     </div>
                     <div class="col-md-8">
                         <h3>Description</h3>
@@ -43,8 +43,8 @@
             </div>
             <div class="tab-pane fade" id="detail" role="tabpanel">
                 <p>Descrition complète</p>
-                <p>{{ course.fullDescription|nl2br }}</p>
-                <a href="{{ asset('programme/' ~ course.program) }}" type="button" class="btn btn-danger rounded-1">Télécharger le programme</a>
+                <p>{{ course.fullDescription|raw }}</p>
+                <a href="{{ asset('programs/' ~ course.program) }}" type="button" class="btn btn-danger {% if course.program == null %} disabled {% endif %} rounded-1" target="_blank">Télécharger le programme</a>
             </div>
             <div class="tab-pane fade" id="commentaires">
                 <div class="mx-5 my-4">

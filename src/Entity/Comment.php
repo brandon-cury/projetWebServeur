@@ -168,4 +168,9 @@ class Comment
 
         return $this;
     }
+    //permet de selectionner le contenu du commentaire par defeaut lorsqu'on l'appel
+    public function __toString():string
+    {
+        return $this->getContent();
+    }
 }

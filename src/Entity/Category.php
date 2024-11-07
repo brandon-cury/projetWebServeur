@@ -120,4 +120,9 @@ class Category
 
         return $this;
     }
+    //permet de selectionner le nom de la categorie par defeaut lorsqu'on l'appel
+    public function __toString():string
+    {
+        return $this->getName();
+    }
 }

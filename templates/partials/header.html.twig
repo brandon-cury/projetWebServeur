@@ -30,10 +30,28 @@
                             <a class="nav-link" href="">Contact</a>
                         </li>
                     </ul>
-                    <form class="d-flex" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">Search</button>
-                    </form>
+                    <ul class="navbar-nav">
+                        {% if app.user == null %}
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="{{ path('app_login') }}">Login</a>
+                            <a class="nav-link" aria-current="page" href="{{ path('app_inscription') }}">inscription</a>
+                        </li>
+                        {% else %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="{{ (app.user.image)?asset('images/avatar/' ~ app.user.image) :asset('images/avatar/default.jpg') }}" class="rounded-circle" style="width: 40px; height: 40px" alt="">
+                                    {{ app.user.firstName }}
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{{ path('app_my_account') }}">My account</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_update_my_account') }}">Update my account</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_update_my_password') }}">Change my Password</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_logout') }}">Logout</a></li>
+
+                                </ul>
+                            </li>
+                        {% endif %}
+                    </ul>
                 </div>
             </div>
         </nav>

@@ -34,8 +34,8 @@ class CourseFixture extends Fixture implements DependentFixtureInterface
                 ->setPrice($faker->optional(0.6)->randomNumber(5, false))
                 ->setCreatedAt(new \DateTimeImmutable())
                 ->setPublished($faker->boolean(80))
-                ->setSlug($slug->slugify($course_name))
-                ->setImage($faker->optional()->imageUrl());
+                //->setImage($faker->boolean(70)?'https://picsum.photos/480/300':null)
+                ->setSlug($slug->slugify($course_name));
                 $manager->persist($course);
         }
 
