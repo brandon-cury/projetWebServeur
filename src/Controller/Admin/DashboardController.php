@@ -12,11 +12,7 @@ class DashboardController extends AbstractController
     #[Route('/admin', name: 'app_admin_dashboard')]
     public function index(CourseRepository $repository): Response
     {
-        $courses = $repository->findBy(
-            [],
-            ['created_at' => 'DESC'],
-
-        );
+        $courses = $repository->findCoursesNotDelete();
         return $this->render('admin/course.html.twig', [
             'courses' => $courses,
         ]);

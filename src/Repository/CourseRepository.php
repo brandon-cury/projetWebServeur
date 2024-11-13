@@ -56,4 +56,13 @@ class CourseRepository extends ServiceEntityRepository
         return $this->paginator->paginate($query, $page, $limit
         );
     }
+
+    public function findCoursesNotDelete(): array
+    {
+        return $this->createQueryBuilder('c')
+                    ->andWhere('c.name IS NOT NULL')
+                    ->orderBy('c.created_at', 'DESC')
+                    ->getQuery()
+                    ->getResult();
+    }
 }

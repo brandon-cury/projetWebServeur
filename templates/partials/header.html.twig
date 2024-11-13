@@ -35,18 +35,19 @@
                             <a href="{{ path('app_login') }}" class="btn btn-lg btn-outline-dark" type="submit">
                                 S'identifier
                             </a>&nbsp;&nbsp;
-                            <a href="#" class="btn btn-lg btn-outline-dark" type="submit">
+                            <a href="{{ path('app_register') }}" class="btn btn-lg btn-outline-dark" type="submit">
                                 S'enregistrer
                             </a>
                         {% else %}
                             <div class="nav-item dropdown pe-5">
                                 <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                                    <img src="{{ asset('images/avatar/' ~ app.user.image) }}" alt="{{ app.user.firstName }}" class="img-menu">
+                                    <img src="{{ (app.user.image != null)?asset('images/avatar/' ~ app.user.image) : asset('images/avatar/default.jpg') }}" alt="{{ app.user.firstName }}" class="img-menu">
                                     {{ app.user.firstName }} {{ app.user.lastName }}
                                 </a>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#">Mon profil</a>
-                                    <a class="dropdown-item" href="#">Modifier le profil</a>
+                                    <a class="dropdown-item" href="{{ path('app_my_account') }}">Profil</a>
+                                    <a class="dropdown-item" href="{{ path('app_update_my_account') }}">Modifier le profil</a>
+                                    <a class="dropdown-item" href="{{ path('app_update_my_password') }}">Modifier le mot de passe</a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="{{ path('app_logout') }}">Logout</a>
                                     {% if is_granted('ROLE_ADMIN') %}

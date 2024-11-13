@@ -25,50 +25,12 @@ class SecurityController extends AbstractController
 
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
-
         return $this->render('security/login.html.twig', [
             'last_username' => $lastUsername,
             'error' => $error,
         ]);
     }
-
-    #[Route(path: '/inscription', name: 'app_inscription')]
-    public function inscription(EntityManagerInterface $manager, Request $request, AuthenticationUtils $authenticationUtils, UserPasswordHasherInterface $hasher): Response
-    {
-        $user = new User();
-        $form = $this->createForm(UserInscriptionType::class, $user);
-        $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()){
-            $password = $form->get("password")->getData();
-            $passwordCheck = $form->get("check_password")->getData();
-            if($password === $passwordCheck){
-                $user->setDisabled(false)
-                    ->setCreatedAt(new \DateTimeImmutable())
-                    ->setUpdatedAt(new \DateTimeImmutable())
-                    ->setLastLogAt(new \DateTimeImmutable())
-                    ->setRoles(['ROLE_USER'])
-                    ->setPassword($hasher->hashPassword($user, $password));
-                $manager->persist($user);
-                $manager->flush();
-                $this->addFlash('success', 'vous êtes inscrit avec succès !');
-                return $this->redirectToRoute('app_home');
-            }
-
-        }
-
-        // get the login error if there is one
-        //$error = $authenticationUtils->getLastAuthenticationError();
-
-        // last username entered by the user
-        //$lastUsername = $authenticationUtils->getLastUsername();
-
-        return $this->render('security/inscription.html.twig', [
-            //'last_username' => $lastUsername,
-            //'error' => $error,
-            'form' => $form->createView(),
-        ]);
-    }
-    #[Route(path: '/my-account', name: 'app_my_account')]
+    #[Route(path: '/profile', name: 'app_my_account')]
     public function myAccount(Request $request): Response
     {
         $user = $this->getUser();
@@ -83,7 +45,7 @@ class SecurityController extends AbstractController
         );
     }
 
-    #[Route(path: '/update-my-account', name: 'app_update_my_account')]
+    #[Route(path: '/profile/update', name: 'app_update_my_account')]
     public function updateMyAccount(EntityManagerInterface $manager, Request $request): Response
     {
         $user = $this->getUser();
@@ -93,7 +55,7 @@ class SecurityController extends AbstractController
             if($form->isSubmitted() && $form->isValid()){
                 $user->setUpdatedAt(new \DateTimeImmutable());
                 $manager->flush();
-                $user->setImageFile(null);
+                $this->addFlash('success', 'Votre profil a été mis à jour');
             }
         }else{
             return $this->redirectToRoute('app_login');
@@ -103,7 +65,7 @@ class SecurityController extends AbstractController
         );
     }
 
-    #[Route(path: '/update-my-password', name: 'app_update_my_password')]
+    #[Route(path: '/profile/update/password', name: 'app_update_my_password')]
     public function updateMyPassword(EntityManagerInterface $manager, Request $request, UserPasswordHasherInterface $passwordHasher): Response
     {
         $user = $this->getUser();
@@ -139,6 +101,7 @@ class SecurityController extends AbstractController
     #[Route(path: '/logout', name: 'app_logout')]
     public function logout(): void
     {
+        $this->addFlash('info', 'Vous êtes déconnecté');
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 }

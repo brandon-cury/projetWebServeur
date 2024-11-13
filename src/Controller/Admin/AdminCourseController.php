@@ -8,6 +8,7 @@ use App\Form\CategoryType;
 use App\Form\CourseType;
 use App\Repository\CategoryRepository;
 use App\Repository\CourseRepository;
+use Cocur\Slugify\Slugify;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,11 +20,7 @@ class AdminCourseController extends AbstractController
     #[Route('/admin/course', name: 'app_admin_course')]
     public function courses(CourseRepository $repository): Response
     {
-        $courses = $repository->findBy(
-            [],
-            ['createdAt' => 'DESC'],
-
-        );
+        $courses = $repository->findCoursesNotDelete();
         return $this->render('admin/course.html.twig', [
             'courses' => $courses
         ]);
@@ -31,13 +28,20 @@ class AdminCourseController extends AbstractController
     #[Route('/admin/newcourse', name: 'app_admin_newcourse')]
     public function newCourse(Request $request, EntityManagerInterface $manager): Response
     {
-        $post = new Course();
-        $form = $this->createForm(CourseType::class, $post);
+        $course = new Course();
+
+        $form = $this->createForm(CourseType::class, $course);
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
-            $post->setPublished(true);
-            $manager->persist($post);
+            $slugify = new Slugify();
+            $course->setPublished(true)
+                    ->setCreatedAt(new \DateTimeImmutable())
+                    ->setSlug($slugify->slugify($course->getName()))
+                    ;
+            $manager->persist($course);
             $manager->flush();
+            $this->addFlash('success', 'votre cours a été ajouté avec succès!');
             return $this->redirectToRoute('app_admin_course');
         }
         return $this->render('admin/newcourse.html.twig', [
@@ -50,8 +54,11 @@ class AdminCourseController extends AbstractController
         $form = $this->createForm(CourseType::class, $course);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $course->setPublished(true);
+            $slugify = new Slugify();
+            $course->setSlug($slugify->slugify($course->getName()))
+                ->setUpdatedAt(new \DateTimeImmutable());
             $manager->flush();
+            $this->addFlash('success', 'votre cours a été modifié avec succès!');
             return $this->redirectToRoute('app_admin_course');
         }
         return $this->render('admin/editcourse.html.twig', [
@@ -64,13 +71,34 @@ class AdminCourseController extends AbstractController
     {
         $course->setPublished(!$course->isPublished());
         $manager->flush();
-        return $this->redirectToRoute('app_admin_post');
+        return $this->redirectToRoute('app_admin_course');
     }
 
     #[Route('/admin/delcourse/{id}', name: 'app_admin_delcourse')]
     public function delCourse(EntityManagerInterface $manager, Course $course): Response
     {
-        $manager->remove($course);
+        // Supprimer l'image physiquement
+        if($course->getImage()){
+            $imagePath = $this->getParameter('kernel.project_dir').'/public/images/cours/' . $course->getImage();
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+        }
+        $course->setName(null)
+            ->setCategory(null)
+            ->setLevel(null)
+            ->setSmallDescription(null)
+            ->setFullDescription(null)
+            ->setDuration(null)
+            ->setPrice(null)
+            ->setPublished(null)
+            ->setSlug(null)
+            ->setImage(null)
+            ->setUpdatedAt(new \DateTimeImmutable())
+            ->setProgram(null)
+            ->setImageFile(null)
+        ;
+        $this->addFlash('danger', 'votre cours a été supprimer avec succès');
         $manager->flush();
         return $this->redirectToRoute('app_admin_course');
     }

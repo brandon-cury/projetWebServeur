@@ -7,8 +7,14 @@ use App\Entity\category;
 use App\Entity\level;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
+use Vich\UploaderBundle\Form\Type\VichFileType;
 
 class
 CourseType extends AbstractType
@@ -16,25 +22,46 @@ CourseType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name')
-            ->add('small_description')
-            ->add('full_description')
+            ->add('name', TextType::class)
+            ->add('small_description', TextType::class)
+            ->add('full_description', HiddenType::class)
             ->add('duration')
             ->add('price')
-            ->add('created_at', null, [
-                'widget' => 'single_text'
+            /*
+            ->add('is_published', CheckboxType::class,)
+            */
+            ->add('imageFile', VichFileType::class, [
+                'required' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '2M',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/gif',
+                            ],
+                        'mimeTypesMessage' => 'Please upload a valid image (JPEG, PNG, GIF)', ]) ],
             ])
-            ->add('is_published')
-            ->add('slug')
-            ->add('image')
-            ->add('program')
+            ->add('programFile', VichFileType::class,
+                [ 'required' => false,
+                    'constraints' => [
+                        new File(
+                            [
+                                'maxSize' => '1024k',
+                                'mimeTypes' => ['application/pdf', 'application/x-pdf'],
+                                'mimeTypesMessage' => 'Please upload a valid PDF document',
+                            ]
+                        ),
+                    ],
+                ]
+            )
             ->add('category', EntityType::class, [
                 'class' => category::class,
-'choice_label' => 'id',
+'choice_label' => 'name',
             ])
             ->add('level', EntityType::class, [
                 'class' => level::class,
-'choice_label' => 'id',
+'choice_label' => 'name',
             ])
         ;
     }

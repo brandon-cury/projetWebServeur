@@ -19,16 +19,16 @@ class Course
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 120)]
+    #[ORM\Column(length: 120, nullable: true)]
     private ?string $name = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $small_description = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $full_description = null;
 
-    #[ORM\Column(length: 60)]
+    #[ORM\Column(length: 60, nullable: true)]
     private ?string $duration = null;
 
     #[ORM\Column(nullable: true)]
@@ -40,13 +40,19 @@ class Course
     #[ORM\Column]
     private ?bool $is_published = null;
 
-    #[ORM\Column(length: 255, unique: true)]
+    #[ORM\Column(length: 255, unique: true, nullable: true)]
     private ?string $slug = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
+
+    #[Vich\UploadableField(mapping: 'course_image', fileNameProperty: 'image')]
+    private ?File $imageFile = null;
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $program = null;
+
+    #[Vich\UploadableField(mapping: 'course_program', fileNameProperty: 'program')]
+    private ?File $programFile = null;
 
     #[ORM\ManyToOne(inversedBy: 'courses')]
     private ?category $category = null;
@@ -59,6 +65,9 @@ class Course
      */
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'course')]
     private Collection $comments;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updated_at = null;
 
 
     public function __construct()
@@ -76,7 +85,7 @@ class Course
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
 
@@ -88,7 +97,7 @@ class Course
         return $this->small_description;
     }
 
-    public function setSmallDescription(string $small_description): static
+    public function setSmallDescription(?string $small_description): static
     {
         $this->small_description = $small_description;
 
@@ -100,7 +109,7 @@ class Course
         return $this->full_description;
     }
 
-    public function setFullDescription(string $full_description): static
+    public function setFullDescription(?string $full_description): static
     {
         $this->full_description = $full_description;
 
@@ -112,7 +121,7 @@ class Course
         return $this->duration;
     }
 
-    public function setDuration(string $duration): static
+    public function setDuration(?string $duration): static
     {
         $this->duration = $duration;
 
@@ -148,7 +157,7 @@ class Course
         return $this->is_published;
     }
 
-    public function setPublished(bool $is_published): static
+    public function setPublished(?bool $is_published): static
     {
         $this->is_published = $is_published;
 
@@ -160,7 +169,7 @@ class Course
         return $this->slug;
     }
 
-    public function setSlug(string $slug): static
+    public function setSlug(?string $slug): static
     {
         $this->slug = $slug;
 
@@ -179,6 +188,20 @@ class Course
         return $this;
     }
 
+    public function setImageFile(?File $imageFile = null): void
+    {
+        $this->imageFile = $imageFile;
+
+        if (null !== $imageFile) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->updated_at = new \DateTimeImmutable();
+        }
+    }
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
 
     public function getProgram(): ?string
     {
@@ -190,6 +213,21 @@ class Course
         $this->program = $program;
 
         return $this;
+    }
+
+    public function setProgramFile(?File $programFile = null): void
+    {
+        $this->programFile = $programFile;
+
+        if (null !== $programFile) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->updated_at = new \DateTimeImmutable();
+        }
+    }
+    public function getProgramFile(): ?File
+    {
+        return $this->programFile;
     }
 
     public function getCategory(): ?category
@@ -249,6 +287,18 @@ class Course
     public function __toString():string
     {
         return $this->getName();
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updated_at;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updated_at): static
+    {
+        $this->updated_at = $updated_at;
+
+        return $this;
     }
 
 

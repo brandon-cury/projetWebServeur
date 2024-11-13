@@ -312,5 +312,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->getFirstName();
     }
+    //pour permettre lupload de limage sur la table user, on doit ajouter les fonction de serialisation pour evité des problème de serialisation
+    public function __serialize(): array
+    {
+        return [
+            $this->id,
+            $this->email,
+            $this->password,
+        ];
+    }
+    public function __unserialize(array $data): void
+    {
+        [
+            $this->id,
+            $this->email,
+            $this->password,
+        ] = $data;
+    }
 
 }

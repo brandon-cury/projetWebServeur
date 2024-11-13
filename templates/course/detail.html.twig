@@ -52,7 +52,7 @@
                     {% set sorted_comments = course.comments|sort((a, b) => b.createdAt <=> a.createdAt) %}
                     {% for comment in sorted_comments|filter(comment => comment.parent is null) %}
                     <div class="d-flex mt-4">
-                        <img style="width: 70px; height: 70px;margin-right: 20px" src="{{ (comment.user.image != null)? asset('images/avatar/' ~ comment.user.image) : asset('images/news/default.png') }}" class="img-fluid rounded-circle" alt="{{ comment.user.lastName }}">
+                        <img style="width: 70px; height: 70px;margin-right: 20px" src="{{ (comment.user.image != null)? asset('images/avatar/' ~ comment.user.image) : asset('images/avatar/default.jpg') }}" class="img-fluid rounded-circle" alt="{{ comment.user.lastName }}">
                         <div class="border-bottom w-100">
                             <h5>{{ comment.createdAt|date('d/m/Y') }} - {{ comment.user.lastName }}</h5>
                             <div class="textEditor">{{ comment.content|raw }}</div>
@@ -77,7 +77,7 @@
                             <h5>Les réponses aux commentaires: </h5>
                             {% for reply in comment.replies %}
                             <div class="d-flex mt-4">
-                                <img style="width: 70px; height: 70px;margin-right: 20px" src="{{ (reply.user.image != null)? asset('images/avatar/' ~ reply.user.image) : asset('images/news/default.png') }}" class="img-fluid rounded-circle" alt="{{ reply.user.lastName }}">
+                                <img style="width: 70px; height: 70px;margin-right: 20px" src="{{ (reply.user.image != null)? asset('images/avatar/' ~ reply.user.image) : asset('images/avatar/default.jpg') }}" class="img-fluid rounded-circle" alt="{{ reply.user.lastName }}">
                                 <div class="border-bottom w-100">
                                     <h5>{{ reply.createdAt|date('d/m/Y') }} - {{ reply.user.lastName }}</h5>
                                     <div class="textEditor">{{ reply.content|raw }}</div>

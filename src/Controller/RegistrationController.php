@@ -25,16 +25,25 @@ class RegistrationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var string $plainPassword */
             $plainPassword = $form->get('plainPassword')->getData();
+            $passwordCheck = $form->get("check_password")->getData();
+            if($plainPassword === $passwordCheck){
+                // encode the plain password
+                $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword))
+                    ->setDisabled(false)
+                    ->setRoles(['ROLE_USER'])
+                    ->setCreatedAt(new \DateTimeImmutable())
+                    ->setUpdatedAt(new \DateTimeImmutable())
+                    ->setLastLogAt(new \DateTimeImmutable())
+                ;
 
-            // encode the plain password
-            $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
+                $entityManager->persist($user);
+                $entityManager->flush();
+                $this->addFlash('success', 'Vous êtes bien enregistré');
+                // do anything else you need here, like send an email
 
-            $entityManager->persist($user);
-            $entityManager->flush();
+                return $security->login($user, 'form_login', 'main');
+            }
 
-            // do anything else you need here, like send an email
-
-            return $security->login($user, 'form_login', 'main');
         }
 
         return $this->render('registration/register.html.twig', [
