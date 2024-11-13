@@ -3,76 +3,76 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Category;
-use App\Entity\Post;
+use App\Entity\Course;
 use App\Form\CategoryType;
-use App\Form\PostType;
+use App\Form\CourseType;
 use App\Repository\CategoryRepository;
-use App\Repository\PostRepository;
+use App\Repository\CourseRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-class AdminPostController extends AbstractController
+class AdminCourseController extends AbstractController
 {
-    #[Route('/admin/post', name: 'app_admin_post')]
-    public function posts(PostRepository $repository): Response
+    #[Route('/admin/course', name: 'app_admin_course')]
+    public function courses(CourseRepository $repository): Response
     {
-        $posts = $repository->findBy(
+        $courses = $repository->findBy(
             [],
             ['createdAt' => 'DESC'],
 
         );
-        return $this->render('admin/post.html.twig', [
-            'posts' => $posts
+        return $this->render('admin/course.html.twig', [
+            'courses' => $courses
         ]);
     }
-    #[Route('/admin/newpost', name: 'app_admin_newpost')]
-    public function newPost(Request $request, EntityManagerInterface $manager): Response
+    #[Route('/admin/newcourse', name: 'app_admin_newcourse')]
+    public function newCourse(Request $request, EntityManagerInterface $manager): Response
     {
-        $post = new Post();
-        $form = $this->createForm(PostType::class, $post);
+        $post = new Course();
+        $form = $this->createForm(CourseType::class, $post);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $post->setPublished(true);
             $manager->persist($post);
             $manager->flush();
-            return $this->redirectToRoute('app_admin_post');
+            return $this->redirectToRoute('app_admin_course');
         }
-        return $this->render('admin/newpost.html.twig', [
+        return $this->render('admin/newcourse.html.twig', [
             'form'=> $form
         ]);
     }
-    #[Route('/admin/editpost/{id}', name: 'app_admin_editpost')]
-    public function editPost(Request $request, EntityManagerInterface $manager, Post $post): Response
+    #[Route('/admin/editcourse/{id}', name: 'app_admin_editcourse')]
+    public function editCourse(Request $request, EntityManagerInterface $manager, Course $course): Response
     {
-        $form = $this->createForm(PostType::class, $post);
+        $form = $this->createForm(CourseType::class, $course);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $post->setPublished(true);
+            $course->setPublished(true);
             $manager->flush();
-            return $this->redirectToRoute('app_admin_post');
+            return $this->redirectToRoute('app_admin_course');
         }
-        return $this->render('admin/editpost.html.twig', [
+        return $this->render('admin/editcourse.html.twig', [
             'form'=> $form,
 
         ]);
     }
-    #[Route('/admin/eyepost/{id}', name: 'app_admin_eyepost')]
-    public function eyePost(Request $request, EntityManagerInterface $manager, Post $post): Response
+    #[Route('/admin/eyecourse/{id}', name: 'app_admin_eyecourse')]
+    public function eyeCourse(Request $request, EntityManagerInterface $manager, Course $course): Response
     {
-        $post->setPublished(!$post->isPublished());
+        $course->setPublished(!$course->isPublished());
         $manager->flush();
         return $this->redirectToRoute('app_admin_post');
     }
 
-    #[Route('/admin/delpost/{id}', name: 'app_admin_delpost')]
-    public function delPost(EntityManagerInterface $manager, Post $post): Response
+    #[Route('/admin/delcourse/{id}', name: 'app_admin_delcourse')]
+    public function delCourse(EntityManagerInterface $manager, Course $course): Response
     {
-        $manager->remove($post);
+        $manager->remove($course);
         $manager->flush();
-        return $this->redirectToRoute('app_admin_post');
+        return $this->redirectToRoute('app_admin_course');
     }
 
 

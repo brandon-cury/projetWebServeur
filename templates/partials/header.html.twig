@@ -30,28 +30,34 @@
                             <a class="nav-link" href="">Contact</a>
                         </li>
                     </ul>
-                    <ul class="navbar-nav">
-                        {% if app.user == null %}
-                        <li class="nav-item">
-                            <a class="nav-link" aria-current="page" href="{{ path('app_login') }}">Login</a>
-                            <a class="nav-link" aria-current="page" href="{{ path('app_inscription') }}">inscription</a>
-                        </li>
+                    <div class="d-flex">
+                        {% if not app.user %}
+                            <a href="{{ path('app_login') }}" class="btn btn-lg btn-outline-dark" type="submit">
+                                S'identifier
+                            </a>&nbsp;&nbsp;
+                            <a href="#" class="btn btn-lg btn-outline-dark" type="submit">
+                                S'enregistrer
+                            </a>
                         {% else %}
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <img src="{{ (app.user.image)?asset('images/avatar/' ~ app.user.image) :asset('images/avatar/default.jpg') }}" class="rounded-circle" style="width: 40px; height: 40px" alt="">
-                                    {{ app.user.firstName }}
+                            <div class="nav-item dropdown pe-5">
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                    <img src="{{ asset('images/avatar/' ~ app.user.image) }}" alt="{{ app.user.firstName }}" class="img-menu">
+                                    {{ app.user.firstName }} {{ app.user.lastName }}
                                 </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ path('app_my_account') }}">My account</a></li>
-                                    <li><a class="dropdown-item" href="{{ path('app_update_my_account') }}">Update my account</a></li>
-                                    <li><a class="dropdown-item" href="{{ path('app_update_my_password') }}">Change my Password</a></li>
-                                    <li><a class="dropdown-item" href="{{ path('app_logout') }}">Logout</a></li>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="#">Mon profil</a>
+                                    <a class="dropdown-item" href="#">Modifier le profil</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="{{ path('app_logout') }}">Logout</a>
+                                    {% if is_granted('ROLE_ADMIN') %}
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" href="{{ path('app_admin_dashboard') }}">Administration</a>
+                                    {% endif %}
+                                </div>
+                            </div>
 
-                                </ul>
-                            </li>
                         {% endif %}
-                    </ul>
+                    </div>
                 </div>
             </div>
         </nav>

@@ -10,6 +10,11 @@ h1 {
   background: url("../images/banner.jpg") no-repeat center center;
   background-size: cover;
 }
+/* image menu */
+.img-menu{
+  width: 40px;
+  border-radius: 50%;
+}
 /* Table */
 table img{
   width: 50px;
