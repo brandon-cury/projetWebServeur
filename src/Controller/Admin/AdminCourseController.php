@@ -98,56 +98,9 @@ class AdminCourseController extends AbstractController
             ->setProgram(null)
             ->setImageFile(null)
         ;
-        $this->addFlash('danger', 'votre cours a été supprimer avec succès');
+        $this->addFlash('danger', 'votre cours a été supprimé avec succès');
         $manager->flush();
         return $this->redirectToRoute('app_admin_course');
-    }
-
-
-    #[Route('/admin/category', name: 'app_admin_category')]
-    public function categories(CategoryRepository $repository): Response
-    {
-        $categories = $repository->findAll();
-        return $this->render('admin/category.html.twig', [
-            'categories' => $categories
-        ]);
-    }
-    #[Route('/admin/newcategory', name: 'app_admin_newcategory')]
-    public function newCategory(Request $request, EntityManagerInterface $manager): Response
-    {
-        $category = new Category();
-        $form = $this->createForm(CategoryType::class, $category);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $manager->persist($category);
-            $manager->flush();
-            return $this->redirectToRoute('app_admin_category');
-        }
-        return $this->render('admin/newcategory.html.twig', [
-            'form_category'=> $form
-        ]);
-    }
-    #[Route('/admin/editcategory/{id}', name: 'app_admin_editcategory')]
-    public function updateCategory(Request $request, EntityManagerInterface $manager, Category $category): Response
-    {
-        $form = $this->createForm(CategoryType::class, $category);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $manager->persist($category);
-            $manager->flush();
-            return $this->redirectToRoute('app_admin_category');
-        }
-        return $this->render('admin/editcategory.html.twig', [
-            'form_category'=> $form
-        ]);
-    }
-
-    #[Route('/admin/delcategory/{id}', name: 'app_admin_delcategory')]
-    public function delCategory(EntityManagerInterface $manager, Category $category): Response
-    {
-        $manager->remove($category);
-        $manager->flush();
-        return $this->redirectToRoute('app_admin_category');
     }
 
 }

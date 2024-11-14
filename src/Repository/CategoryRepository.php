@@ -40,4 +40,13 @@ class CategoryRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function findCetegoriesNotDelete(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.name IS NOT NULL')
+            ->orderBy('c.name', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }
