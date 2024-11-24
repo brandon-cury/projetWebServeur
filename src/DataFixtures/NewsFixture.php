@@ -22,6 +22,7 @@ class NewsFixture extends Fixture
             $new->setName($name)
                 ->setCreatedAt(new \DateTimeImmutable())
                 ->setSlug($slug->slugify($name))
+                ->setPublished($faker->boolean(70))
                 //->setImage($faker->boolean(70)?'https://picsum.photos/480/240':null)
                 ->setContent($faker->paragraph);
                 $manager->persist($new);

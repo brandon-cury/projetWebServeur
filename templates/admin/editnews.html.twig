@@ -1,0 +1,17 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Nouvel article {% endblock %}
+{% block body %}
+<section class="row">
+    <div class="col-md-6 offset-3">
+        <h2 class="display-4">Modifier une actualité</h2>
+        {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <label for="{{ form.content.vars.id }}" class="my-2">contenu de l'actualité :</label>
+            <trix-editor input="{{ form.content.vars.id }}" class="trix-content" required></trix-editor>
+            <input type="submit" value="Modifier l'actualité" class="btn btn-outline-dark">
+        {{ form_end(form) }}
+    </div>
+</section>
+
+{% endblock %}

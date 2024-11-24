@@ -42,6 +42,28 @@
             <li class="nav-item">
                 <a class="nav-link text-danger" href="{{ path('app_admin_comment') }}">Les commentaires</a>
             </li>
+            <li class="nav-item">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle bg-light text-danger border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Les utilisateurs
+                    </button>
+                    <ul class="dropdown-menu bg-light text-black">
+                        <li><a class="dropdown-item" href="{{ path('app_admin_user') }}">Gestion des utilisateurs</a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_admin_newuser') }}">Ajouter un utilisateur</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle bg-light text-danger border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Les actualités
+                    </button>
+                    <ul class="dropdown-menu bg-light text-black">
+                        <li><a class="dropdown-item" href="{{ path('app_admin_news') }}">Gestion des actualités</a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_admin_newnews') }}">Ajouter une actualité</a></li>
+                    </ul>
+                </div>
+            </li>
         </ul>
     </div>
 </nav>

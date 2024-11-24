@@ -30,6 +30,7 @@ class UserFixtures extends Fixture
                 ->setCreatedAt(new \DateTimeImmutable())
                 ->setUpdatedAt(new \DateTimeImmutable())
                 ->setLastLogAt(new \DateTimeImmutable())
+                ->setEmailVerifiedAt($faker->boolean(50)?new \DateTimeImmutable():null)
                 ->setRoles(['ROLE_USER'])
                 ->setPassword($this->hasher->hashPassword($user, 'password'));
                 $gender = ($gender == 'male') ? 'm' : 'f';
@@ -47,6 +48,7 @@ class UserFixtures extends Fixture
             ->setCreatedAt(new \DateTimeImmutable())
             ->setUpdatedAt(new \DateTimeImmutable())
             ->setLastLogAt(new \DateTimeImmutable())
+            ->setEmailVerifiedAt(new \DateTimeImmutable())
             ->setRoles(['ROLE_ADMIN'])
             ->setPassword($this->hasher->hashPassword($user, 'password'))
             ->setImage('073m.jpg');
@@ -62,6 +64,7 @@ class UserFixtures extends Fixture
             ->setCreatedAt(new \DateTimeImmutable())
             ->setUpdatedAt(new \DateTimeImmutable())
             ->setLastLogAt(new \DateTimeImmutable())
+            ->setEmailVerifiedAt(new \DateTimeImmutable())
             ->setRoles(['ROLE_ADMIN'])
             ->setPassword($this->hasher->hashPassword($user, 'password'))
             ->setImage('074m.jpg');

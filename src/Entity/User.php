@@ -69,6 +69,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'user')]
     private Collection $comments;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $email_verified_at = null;
+
 
 
     public function __construct()
@@ -111,7 +114,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        //$roles[] = 'ROLE_USER';
 
         return array_unique($roles);
     }
@@ -328,6 +331,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             $this->email,
             $this->password,
         ] = $data;
+    }
+
+    public function getEmailVerifiedAt(): ?\DateTimeImmutable
+    {
+        return $this->email_verified_at;
+    }
+
+    public function setEmailVerifiedAt(?\DateTimeImmutable $email_verified_at): static
+    {
+        $this->email_verified_at = $email_verified_at;
+
+        return $this;
     }
 
 }

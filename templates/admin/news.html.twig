@@ -1,0 +1,49 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+    <section>
+        <h1 class="display-4">Gestion des actualités</h1>
+        <a href="{{ path('app_admin_newnews') }}" class="btn btn-outline-dark">Ajouter une actualité</a>
+        <table class="table table-hover my-5 table-striped">
+            <thead>
+            <tr>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Content</th>
+                <th>createdAt</th>
+
+                <th>Edit</th>
+                <th>Delete</th>
+                <th>Published</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for new in news %}
+                <tr>
+                    <td> <img  src="{{ (new.image != null)?asset('images/news/' ~ new.image): asset('images/news/default.png')}}" alt="{{ new.name }}"></td>
+                    <td>{{ new.name }}</td>
+                    <td>{{ new.content|raw }}</td>
+                    <td>{{ new.createdAt|date('d/m/y') }}</td>
+                    <td><a href="{{ path('app_admin_editnews', {id: new.id}) }}" ><i class="icofont-edit-alt"></i></a> </td>
+                    <td><a href="{{ path('app_admin_delnews', {id: new.id}) }}" class="text-danger"><i class="icofont-trash"></i></a></td>
+                    <td><a href="{{ path('app_admin_eyenews', {id: new.id}) }}">
+                            {% if new.isPublished %}
+                                <i class="icofont-eye text-success"></i>
+                            {% else %}
+                                <i class="icofont-eye-blocked text-danger"></i>
+                            {% endif %}
+                        </a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {# Pagination #}
+        <div class="row my-4">
+            <div class="col-md-6 offset-3">
+                {{ knp_pagination_render(news) }}
+            </div>
+        </div>
+    </section>
+{% endblock %}

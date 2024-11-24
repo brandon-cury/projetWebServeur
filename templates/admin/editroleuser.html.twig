@@ -1,0 +1,14 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Nouvel article {% endblock %}
+{% block body %}
+<section class="row">
+    <div class="col-md-6 offset-3">
+        {{ form_start(form_roles) }}
+            {{ form_widget(form_roles) }}
+            <input type="submit" value="Modifier le role" class="btn btn-outline-dark">
+        {{ form_end(form_roles) }}
+    </div>
+</section>
+
+{% endblock %}
