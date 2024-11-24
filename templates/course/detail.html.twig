@@ -50,11 +50,15 @@
                 <div class="mx-5 my-4">
                     <h3>Commentaires des abonnés</h3>
                     {% set sorted_comments = course.comments|sort((a, b) => b.createdAt <=> a.createdAt) %}
-                    {% for comment in sorted_comments|filter(comment => comment.parent is null) %}
+                    {% for comment in sorted_comments|filter(comment => comment.parent is null and (comment.published or comment.user == app.user)) %}
                     <div class="d-flex mt-4">
                         <img style="width: 70px; height: 70px;margin-right: 20px" src="{{ (comment.user.image != null)? asset('images/avatar/' ~ comment.user.image) : asset('images/avatar/default.jpg') }}" class="img-fluid rounded-circle" alt="{{ comment.user.lastName }}">
                         <div class="border-bottom w-100">
-                            <h5>{{ comment.createdAt|date('d/m/Y') }} - {{ comment.user.lastName }}</h5>
+                            <h5>{{ comment.createdAt|date('d/m/Y') }} - {{ comment.user.lastName }}
+                                {% if not comment.isPublished %}
+                                    - <i class="text-danger">Non publé</i>
+                                {% endif %}
+                            </h5>
                             <div class="textEditor">{{ comment.content|raw }}</div>
                             <p class="my-2"><small>Evaluation de {{ comment.user.lastName }}:
                                     {% for i in 1..5 %}
@@ -72,14 +76,19 @@
                             {% endif %}
                         </div>
                     </div>
-                        {% if comment.replies|length != 0 %}
+                    {% set replies = comment.replies|filter(reply => reply.published or reply.user == app.user) %}
+                        {% if replies|length != 0 %}
                             <div class="mb-5" style="margin-left: 100px">
                             <h5>Les réponses aux commentaires: </h5>
                             {% for reply in comment.replies %}
                             <div class="d-flex mt-4">
                                 <img style="width: 70px; height: 70px;margin-right: 20px" src="{{ (reply.user.image != null)? asset('images/avatar/' ~ reply.user.image) : asset('images/avatar/default.jpg') }}" class="img-fluid rounded-circle" alt="{{ reply.user.lastName }}">
                                 <div class="border-bottom w-100">
-                                    <h5>{{ reply.createdAt|date('d/m/Y') }} - {{ reply.user.lastName }}</h5>
+                                    <h5>{{ reply.createdAt|date('d/m/Y') }} - {{ reply.user.lastName }}
+                                        {% if not reply.isPublished %}
+                                            - <i class="text-danger">Non publé</i>
+                                        {% endif %}
+                                    </h5>
                                     <div class="textEditor">{{ reply.content|raw }}</div>
                                     <p class="my-2">
                                         <small>

@@ -25,6 +25,7 @@ class CommentFixture extends Fixture implements DependentFixtureInterface
                 $comment = new Comment();
                 $comment->setContent($faker->paragraph)
                     ->setPublished($faker->boolean(80))
+                    ->setSend($faker->boolean(80))
                     ->setRating($faker->numberBetween(0, 5))
                     ->setCreatedAt(new \DateTimeImmutable())
                     ->setCourse($course)

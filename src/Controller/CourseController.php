@@ -80,7 +80,8 @@ class CourseController extends AbstractController
                 $comment->setCreatedAt(new \DateTimeImmutable())
                     ->setCourse($course)
                     ->setParent($parent)
-                    ->setPublished(false);
+                    ->setPublished(false)
+                    ->setSend(false);
                     $comment->setUser($user);
                     $manager->persist($comment);
                     $manager->flush();
@@ -92,6 +93,8 @@ class CourseController extends AbstractController
                 if($user->getId() == $comment2->getUser()->getId()){
 
                     $comment2->setContent($form->get('content')->getData())
+                            ->setPublished(false)
+                            ->setSend(false)
                             ->setRating($form->get('rating')->getData());
                     $manager->persist($comment2);
                     $manager->flush();

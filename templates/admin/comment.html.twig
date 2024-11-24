@@ -23,17 +23,25 @@
                 {% for comment in comments %}
                     <tr>
                         <td> <img  src="{{ (comment.user.image != null)?asset('images/avatar/' ~ comment.user.image): asset('images/avatar/default.jpg')}}" alt="{{ comment.user.firstName }}"></td>
-                        <td>{{ comment.content }}</td>
+                        <td>{{ comment.content|raw }}</td>
                         <td>
                             {% if not comment.parent %}
 
                             {% else %}
-                                comment.parent.content
+                                {{ comment.parent.content|raw }}
                             {% endif %}
                         </td>
                         <td>{{ comment.course.name }}</td>
                         <td>{{ comment.createdAt|date('d/m/y') }}</td>
-                        <td><a href="{{ path('app_admin_comment_send_message', {id: comment.id}) }}"><i class="icofont-edit-alt"></i></a></td>
+                        <td>
+                                {% if not comment.send %}
+                                    <a href="{{ path('app_admin_comment_send_message', {id: comment.id}) }}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="1rem" height="1rem" viewBox="0 0 24 24"><path fill="none" stroke="#4610da" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 12L3 20l3.563-8L3 4zM6.5 12H22"/></svg>
+                                    </a>
+                                {% else %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="1rem" height="1rem" viewBox="0 0 24 24"><path fill="none" stroke="#1d9a3d" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 12L3 20l3.563-8L3 4zM6.5 12H22"/></svg>
+                                {% endif %}
+                        </td>
                         <td><a href="{{ path('app_admin_delcomment', {id: comment.id}) }}" class="text-danger"><i class="icofont-trash"></i></a></td>
                         <td><a href="{{ path('app_admin_eyecomment', {id: comment.id}) }}">
 

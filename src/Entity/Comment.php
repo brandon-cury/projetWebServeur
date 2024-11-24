@@ -36,7 +36,7 @@ class Comment
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $content = null;
 
     #[ORM\Column]
@@ -44,6 +44,9 @@ class Comment
 
     #[ORM\Column]
     private ?float $rating = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $is_send = null;
 
     public function __construct()
     {
@@ -138,7 +141,7 @@ class Comment
         return $this->content;
     }
 
-    public function setContent(string $content): static
+    public function setContent(?string $content): static
     {
         $this->content = $content;
 
@@ -172,5 +175,17 @@ class Comment
     public function __toString():string
     {
         return $this->getContent();
+    }
+
+    public function isSend(): ?bool
+    {
+        return $this->is_send;
+    }
+
+    public function setSend(?bool $is_send): static
+    {
+        $this->is_send = $is_send;
+
+        return $this;
     }
 }
