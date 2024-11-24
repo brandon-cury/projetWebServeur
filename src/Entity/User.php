@@ -69,8 +69,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'user')]
     private Collection $comments;
 
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $email_verified_at = null;
+    #[ORM\Column]
+    private bool $isVerified = false;
 
 
 
@@ -333,14 +333,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         ] = $data;
     }
 
-    public function getEmailVerifiedAt(): ?\DateTimeImmutable
+    public function isVerified(): bool
     {
-        return $this->email_verified_at;
+        return $this->isVerified;
     }
 
-    public function setEmailVerifiedAt(?\DateTimeImmutable $email_verified_at): static
+    public function setVerified(bool $isVerified): static
     {
-        $this->email_verified_at = $email_verified_at;
+        $this->isVerified = $isVerified;
 
         return $this;
     }

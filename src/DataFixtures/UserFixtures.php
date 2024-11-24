@@ -20,7 +20,7 @@ class UserFixtures extends Fixture
     {
 
         $faker = Factory::create();
-        for ($i = 1; $i <= 50; $i++) {
+        for ($i = 1; $i <= 20; $i++) {
             $user = new User();
             $gender = $faker->randomElement($this->genders); //cherche une valeur aleatoire dans un tableau
             $user->setFirstName($faker->firstName($gender))
@@ -30,9 +30,9 @@ class UserFixtures extends Fixture
                 ->setCreatedAt(new \DateTimeImmutable())
                 ->setUpdatedAt(new \DateTimeImmutable())
                 ->setLastLogAt(new \DateTimeImmutable())
-                ->setEmailVerifiedAt($faker->boolean(50)?new \DateTimeImmutable():null)
                 ->setRoles(['ROLE_USER'])
-                ->setPassword($this->hasher->hashPassword($user, 'password'));
+                ->setPassword($this->hasher->hashPassword($user, 'password'))
+                ->setVerified($faker->boolean(50));
                 $gender = ($gender == 'male') ? 'm' : 'f';
                 $user->setImage('0'.($i + 10). $gender. '.jpg');
                 $manager->persist($user);
@@ -48,9 +48,9 @@ class UserFixtures extends Fixture
             ->setCreatedAt(new \DateTimeImmutable())
             ->setUpdatedAt(new \DateTimeImmutable())
             ->setLastLogAt(new \DateTimeImmutable())
-            ->setEmailVerifiedAt(new \DateTimeImmutable())
             ->setRoles(['ROLE_ADMIN'])
             ->setPassword($this->hasher->hashPassword($user, 'password'))
+            ->setVerified(false)
             ->setImage('073m.jpg');
         $manager->persist($user);
         $manager->flush();
@@ -64,9 +64,9 @@ class UserFixtures extends Fixture
             ->setCreatedAt(new \DateTimeImmutable())
             ->setUpdatedAt(new \DateTimeImmutable())
             ->setLastLogAt(new \DateTimeImmutable())
-            ->setEmailVerifiedAt(new \DateTimeImmutable())
             ->setRoles(['ROLE_ADMIN'])
             ->setPassword($this->hasher->hashPassword($user, 'password'))
+            ->setVerified(true)
             ->setImage('074m.jpg');
         $manager->persist($user);
         $manager->flush();
