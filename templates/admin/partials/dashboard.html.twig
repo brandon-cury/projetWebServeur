@@ -7,16 +7,40 @@
                 {{ app.user.firstName }} {{ app.user.lastName }}
             </li>
             <li class="nav-item">
-                <a class="nav-link active" href="{{ path('app_admin_dashboard') }}">Course</a>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle bg-light text-danger border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Les cours
+                    </button>
+                    <ul class="dropdown-menu bg-light text-black">
+                        <li><a class="dropdown-item" href="{{ path('app_admin_dashboard') }}">Gestion des cours</a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_admin_newcourse') }}">Ajouter un cours</a></li>
+                    </ul>
+                </div>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ path('app_admin_category') }}">Category</a>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle bg-light text-danger border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Category
+                    </button>
+                    <ul class="dropdown-menu bg-light text-black">
+                        <li><a class="dropdown-item" href="{{ path('app_admin_category') }}">Gestion des Categories</a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_admin_newcategory') }}">Ajouter une categorie</a></li>
+                    </ul>
+                </div>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Pricing</a>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle bg-light text-danger border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Level
+                    </button>
+                    <ul class="dropdown-menu bg-light text-black">
+                        <li><a class="dropdown-item" href="{{ path('app_admin_level') }}">Gestion des niveaux</a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_admin_newlevel') }}">Ajouter un niveau</a></li>
+                    </ul>
+                </div>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">About</a>
+                <a class="nav-link text-danger" href="{{ path('app_admin_comment') }}">Les commentaires</a>
             </li>
         </ul>
     </div>

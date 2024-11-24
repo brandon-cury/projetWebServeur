@@ -38,6 +38,34 @@ class UserFixtures extends Fixture
         }
         $manager->flush();
 
+        // Admin John Doe
+        $user = new User();
+        $user ->setFirstName('John')
+            ->setLastName('Doe')
+            ->setEmail('john.doe@gmail.com')
+            ->setDisabled(false)
+            ->setCreatedAt(new \DateTimeImmutable())
+            ->setUpdatedAt(new \DateTimeImmutable())
+            ->setLastLogAt(new \DateTimeImmutable())
+            ->setRoles(['ROLE_ADMIN'])
+            ->setPassword($this->hasher->hashPassword($user, 'password'))
+            ->setImage('073m.jpg');
+        $manager->persist($user);
+        $manager->flush();
+
+        // Admin Pat Mar
+        $user = new User();
+        $user ->setFirstName('Pat')
+            ->setLastName('Mar')
+            ->setEmail('pat.mar@gmail.com')
+            ->setDisabled(false)
+            ->setCreatedAt(new \DateTimeImmutable())
+            ->setUpdatedAt(new \DateTimeImmutable())
+            ->setLastLogAt(new \DateTimeImmutable())
+            ->setRoles(['ROLE_ADMIN'])
+            ->setPassword($this->hasher->hashPassword($user, 'password'))
+            ->setImage('074m.jpg');
+        $manager->persist($user);
         $manager->flush();
     }
 }

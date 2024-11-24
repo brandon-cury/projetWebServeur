@@ -40,4 +40,12 @@ class CommentRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function findCommentsNotDelete(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.content IS NOT NULL')
+            ->orderBy('c.created_at', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

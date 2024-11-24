@@ -14,9 +14,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class AdminCourseController extends AbstractController
 {
+    public  function __construct(private readonly sluggerInterface $slugger)
+    {
+
+    }
     #[Route('/admin/course', name: 'app_admin_course')]
     public function courses(CourseRepository $repository): Response
     {
@@ -34,10 +39,9 @@ class AdminCourseController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $slugify = new Slugify();
             $course->setPublished(true)
                     ->setCreatedAt(new \DateTimeImmutable())
-                    ->setSlug($slugify->slugify($course->getName()))
+                    ->setSlug($this->slugger->slug($course->getName()))
                     ;
             $manager->persist($course);
             $manager->flush();

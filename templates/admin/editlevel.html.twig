@@ -1,0 +1,15 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Nouvel article {% endblock %}
+{% block body %}
+<section class="row">
+    <div class="col-md-6 offset-3">
+        <h2 class="display-4">Ajouter un niveau</h2>
+        {{ form_start(form_level) }}
+            {{ form_widget(form_level) }}
+            <input type="submit" value="Modifier le niveau" class="btn btn-outline-dark">
+        {{ form_end(form_level) }}
+    </div>
+</section>
+
+{% endblock %}

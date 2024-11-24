@@ -40,4 +40,12 @@ class LevelRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function findLevelsNotDelete(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.name IS NOT NULL')
+            ->orderBy('c.name', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

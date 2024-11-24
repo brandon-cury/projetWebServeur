@@ -1,0 +1,31 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+    <section>
+        <h1 class="display-4">Gestion des niveau</h1>
+        <a href="{{ path('app_admin_newlevel') }}" class="btn btn-outline-dark">Ajouter un niveau</a>
+        <table class="table table-hover my-5 table-striped">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Prerequis</th>
+
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for level in levels %}
+                <tr>
+                    <td>{{ level.name }}</td>
+                    <td>{{ level.prerequisite|u.truncate(100, '...', false) }}</td>
+                    <td><a href="{{ path('app_admin_editlevel', {id: level.id}) }}" ><i class="icofont-edit-alt"></i></a> </td>
+                    <td><a href="{{ path('app_admin_dellevel', {id: level.id}) }}" class="text-danger"><i class="icofont-trash"></i></a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </section>
+{% endblock %}

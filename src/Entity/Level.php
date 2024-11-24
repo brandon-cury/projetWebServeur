@@ -15,7 +15,7 @@ class Level
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 30)]
+    #[ORM\Column(length: 30, nullable: true)]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -42,7 +42,7 @@ class Level
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
 
