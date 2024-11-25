@@ -1,0 +1,45 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+    <section>
+            <h1 class="display-4">Gestion des Enregistrements aux cours</h1>
+            <table class="table table-hover my-5 table-striped">
+                <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Duration</th>
+                    <th>Price</th>
+                    <th>Users</th>
+
+                    <th>See Users</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for course in coursesUsers %}
+                    <tr>
+                        <td> <img  src="{{ (course.image != null)?asset('images/cours/' ~ course.image): asset('images/cours/default.jpg')}}" alt="{{ course.name }}"></td>
+                        <td>{{ course.name }}</td>
+                        <td>{{ course.duration }}</td>
+                        <td>{{ course.price }}
+                            {% if course.price != null %}
+                                €
+                            {% else %}
+                                Gratuit
+                            {% endif %}
+
+
+                        <td>{{ course.user_count }}</td>
+                        <td>
+                            <a href="{{ path('app_admin_course_regis', {id: course.id}) }}">
+                                <i class="icofont-eye text-success"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+    </section>
+{% endblock %}

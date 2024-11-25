@@ -40,4 +40,11 @@ class RegistrationRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function countUsersByCourse() {
+        $qb = $this->createQueryBuilder('uc')
+            ->select('c.id,c.name,c.image,c.duration,c.price, COUNT(uc.user) as user_count')
+            ->join('uc.course', 'c')
+            ->groupBy('c.id');
+        return $qb->getQuery()->getResult();
+    }
 }
