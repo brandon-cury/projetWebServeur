@@ -7,7 +7,18 @@
         <section id="courses">
             <div class="row">
                 <div class="col-md-12">
-                    <h1 class="display-6">Tout nos cours</h1>
+                    {% for cat in categories %}
+                        {% if cat.name == categorie.name %}
+                            <a href="{{ path('app_courses', {category_slug: cat.slug}) }}" class="btn btn-success btn-sm">{{ cat.name }}</a>
+                        {% else %}
+                            <a href="{{ path('app_courses', {category_slug: cat.slug}) }}" class="btn btn-outline-success btn-sm">{{ cat.name }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    <h1 class="display-6">Tout nos cours
+                        {% if categorie.name != 'Tous' %}
+                            {{ categorie.name }}
+                        {% endif %}
+                    </h1>
 
                     {% for course in courses %}
                         <div class="card mb-5">

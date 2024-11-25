@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Category;
 use App\Entity\Comment;
 use App\Entity\Course;
 use App\Form\CommentType;
@@ -27,8 +28,13 @@ class CourseController extends AbstractController
         );
         $limit = 10;
         $courses = $repository->paginateCourse($page, $limit, $categorie);
+        if(!$categorie) $categorie = (new Category())->setName('Tous');
+        $categories = $categoryRepository->findAll();
+        $categories[] = (new Category())->setName('Tous');
         return $this->render('course/courses.html.twig', [
             'courses' => $courses,
+            'categories' => $categories,
+            'categorie' => $categorie
         ]);
     }
 

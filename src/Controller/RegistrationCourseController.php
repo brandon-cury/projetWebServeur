@@ -77,12 +77,12 @@ class RegistrationCourseController extends AbstractController
         }
         if($registration->getUser() != $user){
             $this->addFlash('danger', 'Suppression impossible!');
-            return $this->redirectToRoute('app_basket');
+            return $this->redirectToRoute('app_course_registration');
         }
         $manager->remove($registration);
         $manager->flush();
         $this->addFlash('success', 'Vous avez bien été supprimé de la formation !');
-        return $this->redirectToRoute('app_basket');
+        return $this->redirectToRoute('app_course_registration');
     }
 
 }
