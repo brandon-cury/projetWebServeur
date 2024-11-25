@@ -37,6 +37,7 @@
                         <p>Ajouté le: {{ course.createdAt|date('d/m/Y') }}</p>
                         <p>Horaire: {{ course.program }} </p>
                         <p>Niveau: {{ course.level.name }}</p>
+                        <a href="{{ path('app_basket_add', {id: course.id}) }}" class="btn btn-outline-dark">Ajouter au Pagnier</a>
                     </div>
 
                 </div>
@@ -56,7 +57,7 @@
                         <div class="border-bottom w-100">
                             <h5>{{ comment.createdAt|date('d/m/Y') }} - {{ comment.user.lastName }}
                                 {% if not comment.isPublished %}
-                                    - <i class="text-danger">Non publé</i>
+                                    - <i class="text-danger">Non publié</i>
                                 {% endif %}
                             </h5>
                             <div class="textEditor">{{ comment.content|raw }}</div>
@@ -86,7 +87,7 @@
                                 <div class="border-bottom w-100">
                                     <h5>{{ reply.createdAt|date('d/m/Y') }} - {{ reply.user.lastName }}
                                         {% if not reply.isPublished %}
-                                            - <i class="text-danger">Non publé</i>
+                                            - <i class="text-danger">Non publié</i>
                                         {% endif %}
                                     </h5>
                                     <div class="textEditor">{{ reply.content|raw }}</div>
