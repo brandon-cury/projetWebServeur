@@ -26,7 +26,7 @@
                     </div>
                     <div class="col-md-8">
                         <h3>Description</h3>
-                        <p>{{ course.smallDescription|nl2br }}</p>
+                        <p>{{ course.smallDescription }}</p>
                         <h3>Informations</h3>
                         {% if course.price != null %}
                             <p>Prix: {{ course.price }} €</p>
@@ -44,7 +44,7 @@
             </div>
             <div class="tab-pane fade" id="detail" role="tabpanel">
                 <p>Descrition complète</p>
-                <p>{{ course.fullDescription|raw }}</p>
+                <p>{{ course.fullDescription|nl2br|raw }}</p>
                 <a href="{{ asset('programs/' ~ course.program) }}" type="button" class="btn btn-danger {% if course.program == null %} disabled {% endif %} rounded-1" target="_blank">Télécharger le programme</a>
             </div>
             <div class="tab-pane fade" id="commentaires">

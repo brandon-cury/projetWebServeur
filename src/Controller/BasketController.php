@@ -13,7 +13,6 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-
 class BasketController extends AbstractController
 {
     public function nomberCourses(BasketRepository $repository, Security $security): Response
@@ -44,24 +43,27 @@ class BasketController extends AbstractController
         $basket = new Basket();
         $user = $security->getUser();
         if($user){
-            $findBasket = $manager->getRepository(Basket::class)->findOneBy(
-                [
-                    'user' => $user->getId(),
-                    'course' => $course->getId()
-                ]
-            );
-            $userEnrolledInCourse = $repository->isUserEnrolledInCourse($user, $course);
-            if($findBasket == null && !$userEnrolledInCourse){
-                $basket->setCourse($course)
-                    ->setUser($user)
-                    ->setCreatedAt(new \DateTimeImmutable())
-                ;
-                $manager->persist($basket);
-                $manager->flush();
-                $this->addFlash('success', 'La formation a bien été ajouter au panier');
-            }else{
-                $this->addFlash('info', 'Cette formation a déjà été ajouté dans votre panier !');
-            }
+
+                $findBasket = $manager->getRepository(Basket::class)->findOneBy(
+                    [
+                        'user' => $user->getId(),
+                        'course' => $course->getId()
+                    ]
+                );
+                $userEnrolledInCourse = $repository->isUserEnrolledInCourse($user, $course);
+                if($findBasket == null && !$userEnrolledInCourse){
+                    $basket->setCourse($course)
+                        ->setUser($user)
+                        ->setCreatedAt(new \DateTimeImmutable())
+                    ;
+                    $manager->persist($basket);
+                    $manager->flush();
+                    $this->addFlash('success', 'La formation a bien été ajouter au panier');
+                }else{
+                    $this->addFlash('info', 'Cette formation a déjà été ajouté dans votre panier !');
+                }
+
+
 
 
         }else{

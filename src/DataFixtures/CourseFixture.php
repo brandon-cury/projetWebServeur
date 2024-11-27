@@ -29,7 +29,7 @@ class CourseFixture extends Fixture implements DependentFixtureInterface
                 ->setLevel($faker->randomElement($this->levels))
                 ->setName($course_name)
                 ->setSmallDescription($faker->text)
-                ->setFullDescription($faker->paragraph(100))
+                ->setFullDescription(implode("\n", $faker->paragraphs($faker->numberBetween(2, 10))))
                 ->setDuration($faker->randomDigit() . ' mois')
                 ->setPrice($faker->optional()->randomFloat(2, 0, 50))
                 ->setCreatedAt(new \DateTimeImmutable())

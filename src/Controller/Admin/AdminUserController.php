@@ -25,7 +25,10 @@ class AdminUserController extends AbstractController
     #[Route('/admin/user', name: 'app_admin_user')]
     public function users(UserRepository $repository, PaginatorInterface $paginator, Request $request): Response
     {
-        $users = $repository->findAll();
+        $users = $repository->findBy(
+            [],
+            ['createdAt' => 'desc']
+        );
         $pagination = $paginator->paginate($users, $request->query->getInt('page', 1), 10);
         return $this->render('admin/user/user.html.twig', [
             'users' => $pagination
