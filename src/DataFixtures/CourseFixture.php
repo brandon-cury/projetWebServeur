@@ -15,6 +15,7 @@ class CourseFixture extends Fixture implements DependentFixtureInterface
 {
     private array $categories = [];
     private array $levels = [];
+    private array $joursDeLaSemaine = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'];
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create();
@@ -31,6 +32,7 @@ class CourseFixture extends Fixture implements DependentFixtureInterface
                 ->setSmallDescription($faker->text)
                 ->setFullDescription(implode("\n", $faker->paragraphs($faker->numberBetween(2, 10))))
                 ->setDuration($faker->randomDigit() . ' mois')
+                ->setSchedule($faker->optional(0.7)->randomElement($this->joursDeLaSemaine))
                 ->setPrice($faker->optional()->randomFloat(2, 0, 50))
                 ->setCreatedAt(new \DateTimeImmutable())
                 ->setPublished($faker->boolean(80))

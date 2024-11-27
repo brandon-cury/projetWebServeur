@@ -31,11 +31,13 @@
                         {% if course.price != null %}
                             <p>Prix: {{ course.price }} €</p>
                         {% else %}
-                            <p>Prix: gratuit </p>
+                            <p>Prix: Offert </p>
                         {% endif %}
                         <p>Durée: {{ course.duration }}</p>
                         <p>Ajouté le: {{ course.createdAt|date('d/m/Y') }}</p>
-                        <p>Horaire: {{ course.program }} </p>
+                        {% if course.schedule %}
+                            <p>Horaire: {{ course.schedule }} </p>
+                        {% endif %}
                         <p>Niveau: {{ course.level.name }}</p>
                         <a href="{{ path('app_basket_add', {id: course.id}) }}" class="btn btn-outline-dark">Ajouter au Pagnier</a>
                     </div>
@@ -44,7 +46,7 @@
             </div>
             <div class="tab-pane fade" id="detail" role="tabpanel">
                 <p>Descrition complète</p>
-                <p>{{ course.fullDescription|nl2br|raw }}</p>
+                <p>{{ course.fullDescription|raw|nl2br }}</p>
                 <a href="{{ asset('programs/' ~ course.program) }}" type="button" class="btn btn-danger {% if course.program == null %} disabled {% endif %} rounded-1" target="_blank">Télécharger le programme</a>
             </div>
             <div class="tab-pane fade" id="commentaires">
@@ -130,7 +132,7 @@
                     {{ form_start(form) }}
                     {{ form_widget(form) }}
                     <label for="{{ form.content.vars.id }}" class="my-2">laissez un commentaire:</label>
-                    <trix-editor input="{{ form.content.vars.id }}" class="trix-content" required></trix-editor>
+                    <trix-editor input="{{ form.content.vars.id }}" class="trix-content"></trix-editor>
                     <input type="submit" value="Envoyer" class="btn btn-danger mt-2">
                     {{ form_end(form)}}
 

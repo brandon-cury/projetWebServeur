@@ -8,9 +8,15 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 #[Vich\Uploadable]
+#[UniqueEntity(
+    fields: 'name',
+    message: 'le titre de la categorie existe déjà.'
+)]
 class Category
 {
     #[ORM\Id]
@@ -18,15 +24,42 @@ class Category
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\NotBlank(
+        message: 'Le titre ne peut pas être vide',
+    )]
+    #[Assert\Length(
+        min: 3,
+        max: 120,
+        minMessage: 'Le titre doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'Le titre ne doit pas dépasser {{ limit }} caractères',
+    )]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-ZÀ-ÿ\s']+$/",
+        message: 'Le titre de la categorie se compose de caractères non autorisés',
+    )]
     #[ORM\Column(length: 120, nullable: true)]
     private ?string $name = null;
 
+    #[Assert\NotBlank(
+        message: 'La description ne peut pas être vide',
+    )]
+    #[Assert\Length(
+        min: 5,
+        max: 255,
+        minMessage: 'La description doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'La description ne doit pas dépasser {{ limit }} caractères',
+    )]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
 
+    #[Assert\File(
+        maxSize : "2M",
+        mimeTypes : ["image/jpeg", "image/png", "image/gif"],
+        mimeTypesMessage: "Veuillez télécharger une image valide (JPEG, PNG, GIF)."
+    )]
     #[Vich\UploadableField(mapping: 'category', fileNameProperty: 'image')]
     private ?File $imageFile = null;
 

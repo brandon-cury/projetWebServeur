@@ -58,7 +58,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             ->setLastLogAt(new \DateTimeImmutable())
             ->setRoles(['ROLE_SUPER_ADMIN'])
             ->setPassword($this->hasher->hashPassword($user, 'password'))
-            ->setVerified(false)
+            ->setVerified(true)
             ->addCourse($faker->randomElement($this->courses))
             ->setImage('073m.jpg');
         $manager->persist($user);

@@ -11,10 +11,7 @@ class CategoryController extends AbstractController
 {
     public function categories(CategoryRepository $repository): Response
     {
-        $categories = $repository->findBy(
-            [],
-            ['name'=>'ASC'],
-        );
+        $categories = $repository->findCetegoriesNotDelete();
 
         return $this->render('partials/categories.html.twig', [
             "categories" => $categories,

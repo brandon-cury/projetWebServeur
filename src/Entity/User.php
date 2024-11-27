@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[Vich\Uploadable]
@@ -38,13 +38,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     private ?string $password = null;
-
+    #[Assert\NotBlank(
+        message: 'Le prénom ne peut pas être vide',
+    )]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+        minMessage: 'Le prénom doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'Le prénom ne doit pas dépasser {{ limit }} caractères',
+    )]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-ZÀ-ÿ\s']+$/",
+        message: 'Votre prénom se compose de caractères non autorisés',
+    )]
     #[ORM\Column(length: 255)]
     private ?string $firstName = null;
-
+    #[Assert\NotBlank(
+        message: 'Le nom ne peut pas être vide',
+    )]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+        minMessage: 'Le nom doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'Le nom ne doit pas dépasser {{ limit }} caractères',
+    )]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-ZÀ-ÿ\s']+$/",
+        message: 'Votre nom se compose de caractères non autorisés',
+    )]
     #[ORM\Column(length: 255)]
     private ?string $lastName = null;
 
+    #[Assert\File(
+        maxSize : "2M",
+        mimeTypes : ["image/jpeg", "image/png", "image/gif"],
+        mimeTypesMessage: "Veuillez télécharger une image valide (JPEG, PNG, GIF)."
+    )]
     #[Vich\UploadableField(mapping: 'avatar', fileNameProperty: 'image')]
     private ?File $imageFile = null;
 
@@ -91,7 +120,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->comments = new ArrayCollection();
         $this->baskets = new ArrayCollection();
-        $this->registrations = new ArrayCollection();
         $this->course = new ArrayCollection();
     }
 

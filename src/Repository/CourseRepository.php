@@ -47,15 +47,23 @@ class CourseRepository extends ServiceEntityRepository
 
     public function paginateCourse(int $page, int $limit, Category $category = null) : PaginationInterface
     {
-        $query = $this->createQueryBuilder('r')
-            ->where('r.is_published = true');
-        if(!empty($category)){
-            $query->andWhere('r.category = :category')
-                ->setParameter('category', $category);
+        if($category->getSlug()) {
+            $query = $this->createQueryBuilder('c')
+                ->where('c.name IS NOT NULL AND c.is_published = true')
+                ->andWhere('c.category = :category')
+                ->setParameter('category', $category)
+                ->orderBy('c.created_at', 'DESC')
+                ->getQuery()
+                ->getResult();
+        }else{
+            $query = $this->createQueryBuilder('c')
+                ->where('c.name IS NOT NULL AND c.is_published = true')
+                ->orderBy('c.created_at', 'DESC')
+                ->getQuery()
+                ->getResult();
         }
-        $query->orderBy('r.created_at', 'DESC');
-        return $this->paginator->paginate($query, $page, $limit
-        );
+        return $this->paginator->paginate($query, $page, $limit);
+
     }
 
     public function findCoursesNotDelete(): array

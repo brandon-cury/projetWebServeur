@@ -7,11 +7,12 @@
         <section>
             <div class="row">
                 <div class="col-md-8 offset-2">
+                    <h1>Vous êtes inscrit aux formations suivantes</h1>
                     {% for course in courses %}
                         <div class="row my-4 py-4 border-bottom">
                             <h3 class="mb-3">{{ course.name }}</h3>
                             <div class="col-md-4">
-                                <img src="{{ (course.image != null)?course.image : asset('images/cours/default.jpg') }}" class="img-fluid rounded-start" alt="{{ course.name }}">
+                                <img src="{{ (course.image != null)?asset('images/cours/' ~ course.image) : asset('images/cours/default.jpg') }}" class="img-fluid rounded-start" alt="{{ course.name }}">
                             </div>
                             <div class="col-md-8">
                                 <h5>Description</h5>
@@ -20,11 +21,13 @@
                                 {% if course.price != null %}
                                     <p>Prix: {{ course.price }} €</p>
                                 {% else %}
-                                    <p>Prix: gratuit </p>
+                                    <p>Prix: Offert </p>
                                 {% endif %}
                                 <p>Durée: {{ course.duration }}</p>
                                 <p>Ajouté le: {{ course.createdAt|date('d/m/Y') }}</p>
-                                <p>Horaire: {{ course.program }} </p>
+                                {% if course.schedule %}
+                                    <p>Horaire: {{ course.schedule }} </p>
+                                {% endif %}
                                 <p>Niveau: {{ course.level.name }}</p>
                                 <a href="" class="btn btn-dark disabled"><svg xmlns="http://www.w3.org/2000/svg" width="1.5rem" height="1.5rem" viewBox="0 0 24 24"><path fill="#ffffff" d="M12 9a3 3 0 0 1 3 3a3 3 0 0 1-3 3a3 3 0 0 1-3-3a3 3 0 0 1 3-3m0-4.5c5 0 9.27 3.11 11 7.5c-1.73 4.39-6 7.5-11 7.5S2.73 16.39 1 12c1.73-4.39 6-7.5 11-7.5M3.18 12a9.821 9.821 0 0 0 17.64 0a9.821 9.821 0 0 0-17.64 0"/></svg> Aller à la formation</a>
                                 <a href="{{ path('app_registration_course_del', {id: course.id}) }}" class="btn btn-danger"><svg xmlns="http://www.w3.org/2000/svg" width="1.5rem" height="1.5rem" viewBox="0 0 24 24"><path fill="#ffffff" d="M7 21q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.587 1.413T17 21zM17 6H7v13h10zM9 17h2V8H9zm4 0h2V8h-2zM7 6v13z"/></svg> Supprimer</a>

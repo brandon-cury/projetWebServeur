@@ -9,9 +9,8 @@ use App\Repository\CategoryRepository;
 use App\Repository\LevelRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -27,13 +26,17 @@ CourseType extends AbstractType
             ->add('name', TextType::class)
             ->add('small_description', TextType::class)
             ->add('full_description', HiddenType::class)
-            ->add('duration')
-            ->add('price')
+            ->add('duration', TextType::class)
+            ->add('price', NumberType::class)
+            ->add('schedule',  TextType::class, [
+                'label' => 'Horaire',
+            ])
             /*
             ->add('is_published', CheckboxType::class,)
             */
             ->add('imageFile', VichFileType::class, [
                 'required' => false,
+                'label' => 'Image',
                 'constraints' => [
                     new File([
                         'maxSize' => '2M',
@@ -64,6 +67,7 @@ CourseType extends AbstractType
                     return $er->createQueryBuilder('c')
                     ->where('c.name IS NOT NULL');
                 },
+                'placeholder' => 'Choisissez une catégorie',
 
             ])
             ->add('level', EntityType::class, [
@@ -73,6 +77,7 @@ CourseType extends AbstractType
                     return $er->createQueryBuilder('c')
                         ->where('c.name IS NOT NULL');
                 },
+                'placeholder' => 'Choisissez un niveau',
             ])
         ;
     }

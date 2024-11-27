@@ -28,13 +28,14 @@ class CourseController extends AbstractController
         $page = $request->query->getInt('page', 1);
         $category_url = $request->query->getInt('category');
         $categorie = $categoryRepository->findOneBy(
-            ['name'=> $category_slug]
+            ['slug'=> $category_slug]
         );
         $limit = 9;
         $courses = $repository->paginateCourse($page, $limit, $categorie);
         if(!$categorie) $categorie = (new Category())->setName('Tous');
-        $categories = $categoryRepository->findAll();
+        $categories = $categoryRepository->findCetegoriesNotDelete();
         $categories[] = (new Category())->setName('Tous');
+
         return $this->render('course/courses.html.twig', [
             'courses' => $courses,
             'categories' => $categories,
@@ -59,7 +60,11 @@ class CourseController extends AbstractController
         foreach ($comments as $comment){
             $rating += $comment->getRating();
         };
-        $ratings_active = ceil($rating/$comments_count);
+        if($comments_count == 0){
+            $ratings_active = 0;
+        }else{
+            $ratings_active = ceil($rating/$comments_count);
+        }
         $ratings= [
             'actifs' => $ratings_active,
             'numbers' => $comments_count

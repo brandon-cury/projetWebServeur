@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
 class Comment
@@ -25,10 +26,16 @@ class Comment
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
     private Collection $replies;
 
+    #[Assert\NotBlank(
+        message: 'Le cours ne peut pas être vide',
+    )]
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Course $course = null;
 
+    #[Assert\NotBlank(
+        message: 'L\'utilisateur ne peut pas être vide',
+    )]
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
@@ -42,6 +49,12 @@ class Comment
     #[ORM\Column]
     private ?bool $is_published = null;
 
+    #[Assert\NotBlank(
+        message: 'Le nombre d\'étoile ne peut pas être vide',
+    )]
+    #[Assert\Positive(
+        message: 'Le nombre d\'étoile doit être un nombre strictement positif.'
+    )]
     #[ORM\Column]
     private ?float $rating = null;
 

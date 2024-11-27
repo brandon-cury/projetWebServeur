@@ -21,7 +21,7 @@
                 {% for course in courses %}
                     <div class="col-md-4">
                         <div class="card mb-5">
-                            <img src="{{ (course.image != null)?course.image : asset('images/cours/default.jpg') }}" class="img-fluid rounded-start" alt="{{ course.name }}">
+                            <img src="{{ (course.image != null)?asset('images/cours/' ~ course.image) : asset('images/cours/default.jpg') }}" class="img-fluid rounded-start" alt="{{ course.name }}">
                             <div class="card-body">
                                 <p>Categorie : {{ course.category.name }}</p>
 

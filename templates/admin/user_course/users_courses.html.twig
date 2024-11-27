@@ -9,10 +9,21 @@
                 <thead>
                 <tr>
                     <th>Image</th>
-                    <th>Name</th>
-                    <th>Duration</th>
-                    <th>Price</th>
-                    <th>Users</th>
+                    <th {% if coursesUsers.isSorted('name') %} class="sorted"{% endif %}>
+                        {{ knp_pagination_sortable(coursesUsers, 'Name', 'name') }}
+                    </th>
+
+                    <th {% if coursesUsers.isSorted('duration') %} class="sorted"{% endif %}>
+                        {{ knp_pagination_sortable(coursesUsers, 'Duration', 'duration') }}
+                    </th>
+
+                    <th {% if coursesUsers.isSorted('price') %} class="sorted"{% endif %}>
+                        {{ knp_pagination_sortable(coursesUsers, 'Price', 'price') }}
+                    </th>
+
+                    <th {% if coursesUsers.isSorted('users') %} class="sorted"{% endif %}>
+                        {{ knp_pagination_sortable(coursesUsers, 'Users', 'users') }}
+                    </th>
 
                     <th>See Users</th>
                 </tr>
@@ -23,9 +34,9 @@
                         <td> <img  src="{{ (course[0].image != null)?asset('images/cours/' ~ course[0].image): asset('images/cours/default.jpg')}}" alt="{{ course[0].name }}"></td>
                         <td>{{ course[0].name }}</td>
                         <td>{{ course[0].duration }}</td>
-                        <td>{{ course[0].price }}
+                        <td>
                             {% if course[0].price != null %}
-                                €
+                                {{ course[0].price }} €
                             {% else %}
                                 Offert
                             {% endif %}
@@ -41,5 +52,11 @@
                 {% endfor %}
                 </tbody>
             </table>
+        {# Pagination #}
+        <div class="row my-4">
+            <div class="col-md-6 offset-3">
+                {{ knp_pagination_render(coursesUsers) }}
+            </div>
+        </div>
     </section>
 {% endblock %}

@@ -17,6 +17,7 @@ class CategoryType extends AbstractType
             ->add('name')
             ->add('description')
             ->add('imageFile', VichFileType::class, [
+                'label' => 'Image',
                 'required' => false,
                 'constraints' => [
                     new File([

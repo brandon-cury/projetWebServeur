@@ -6,8 +6,14 @@ use App\Repository\LevelRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: LevelRepository::class)]
+#[UniqueEntity(
+    fields: 'name',
+    message: 'le titre du niveau existe déjà.'
+)]
 class Level
 {
     #[ORM\Id]
@@ -15,9 +21,31 @@ class Level
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\NotBlank(
+        message: 'Le titre ne peut pas être vide',
+    )]
+    #[Assert\Length(
+        min: 3,
+        max: 30,
+        minMessage: 'Le titre doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'Le titre ne doit pas dépasser {{ limit }} caractères',
+    )]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-ZÀ-ÿ\s']+$/",
+        message: 'Le titre du niveau se compose de caractères non autorisés',
+    )]
     #[ORM\Column(length: 30, nullable: true)]
     private ?string $name = null;
 
+    #[Assert\NotBlank(
+        message: 'Les prérequis ne peuvent pas être vide',
+    )]
+    #[Assert\Length(
+        min: 5,
+        max: 255,
+        minMessage: 'Les prérequis doivent contenir au moins {{ limit }} caractères',
+        maxMessage: 'Les prérequis ne doivent pas dépasser {{ limit }} caractères',
+    )]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $prerequisite = null;
 

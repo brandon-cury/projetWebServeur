@@ -9,9 +9,15 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: CourseRepository::class)]
 #[Vich\Uploadable]
+#[UniqueEntity(
+    fields: 'name',
+    message: 'le titre du cours existe déjà.'
+)]
 class Course
 {
     #[ORM\Id]
@@ -19,18 +25,60 @@ class Course
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\NotBlank(
+        message: 'Le titre ne peut pas être vide',
+    )]
+    #[Assert\Length(
+        min: 5,
+        max: 255,
+        minMessage: 'Le titre doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'Le titre ne doit pas dépasser {{ limit }} caractères',
+    )]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-ZÀ-ÿ\s']+$/",
+        message: 'Le titre du cours se compose de caractères non autorisés',
+    )]
     #[ORM\Column(length: 120, nullable: true)]
     private ?string $name = null;
 
+    #[Assert\NotBlank(
+        message: 'La petite description ne peut pas être vide',
+    )]
+    #[Assert\Length(
+        min: 5,
+        max: 200,
+        minMessage: 'La petite description doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'La petite description ne doit pas dépasser {{ limit }} caractères',
+    )]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $small_description = null;
 
+    #[Assert\NotBlank(
+        message: 'La longue description ne peut pas être vide',
+    )]
+    #[Assert\Length(
+        min: 5,
+        minMessage: 'La longue description doit contenir au moins {{ limit }} caractères',
+    )]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $full_description = null;
 
+    #[Assert\NotBlank(
+        message: 'La durée ne peut pas être vide.',
+    )]
+    #[Assert\Length(
+        min: 5,
+        max: 60,
+        minMessage: 'La durée doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'La durée ne doit pas dépasser {{ limit }} caractères',
+    )]
     #[ORM\Column(length: 60, nullable: true)]
     private ?string $duration = null;
 
+
+    #[Assert\PositiveOrZero(
+        message: "Le prix doit être un nombre strictement positif."
+    )]
     #[ORM\Column(nullable: true)]
     private ?float $price = null;
 
@@ -46,17 +94,33 @@ class Course
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
 
+    #[Assert\File(
+        maxSize : "2M",
+        mimeTypes : ["image/jpeg", "image/png", "image/gif"],
+        mimeTypesMessage: "Veuillez télécharger une image valide (JPEG, PNG, GIF)."
+    )]
     #[Vich\UploadableField(mapping: 'course_image', fileNameProperty: 'image')]
     private ?File $imageFile = null;
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $program = null;
 
+    #[Assert\File(
+        maxSize : "10M",
+        mimeTypes : ["application/pdf"],
+        mimeTypesMessage: "Veuillez télécharger un fichier PDF valide."
+    )]
     #[Vich\UploadableField(mapping: 'course_program', fileNameProperty: 'program')]
     private ?File $programFile = null;
 
+    #[Assert\NotBlank(
+        message: 'La categorie ne peut pas être vide',
+    )]
     #[ORM\ManyToOne(inversedBy: 'courses')]
     private ?category $category = null;
 
+    #[Assert\NotBlank(
+        message: 'Le niveau ne peut pas être vide',
+    )]
     #[ORM\ManyToOne(inversedBy: 'courses')]
     private ?level $level = null;
 
@@ -81,12 +145,18 @@ class Course
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'course')]
     private Collection $users;
 
+    #[Assert\Regex(
+        pattern: "/^[a-zA-ZÀ-ÿ\s',\-0-9]+$/",
+        message: 'L\'horaire du cours se compose de caractères non autorisés',
+    )]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $schedule = null;
+
 
     public function __construct()
     {
         $this->comments = new ArrayCollection();
         $this->baskets = new ArrayCollection();
-        $this->registrations = new ArrayCollection();
         $this->users = new ArrayCollection();
     }
 
@@ -369,6 +439,18 @@ class Course
         if ($this->users->removeElement($user)) {
             $user->removeCourse($this);
         }
+
+        return $this;
+    }
+
+    public function getSchedule(): ?string
+    {
+        return $this->schedule;
+    }
+
+    public function setSchedule(?string $schedule): static
+    {
+        $this->schedule = $schedule;
 
         return $this;
     }

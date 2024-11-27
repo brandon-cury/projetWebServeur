@@ -90,6 +90,14 @@ class AdminCourseController extends AbstractController
                 unlink($imagePath);
             }
         }
+        // Supprimer le programe physiquement
+        if($course->getProgram()){
+            $programPath = $this->getParameter('kernel.project_dir').'/public/programs/' . $course->getProgram();
+            if (file_exists($programPath)) {
+                unlink($programPath);
+            }
+        }
+        //supprimer en DB sans cassure vu que la table course est lié au commentaire, level...
         $course->setName(null)
             ->setCategory(null)
             ->setLevel(null)
