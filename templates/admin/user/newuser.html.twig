@@ -1,9 +1,10 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}Nouvel niveau{% endblock %}
+{% block title %}Nouveau utilisateur{% endblock %}
 {% block body %}
 <section class="row">
     <div class="col-md-6 offset-3">
+        <h1 class="display-4">Ajouter un utilisateur</h1>
         {{ form_start(form) }}
             {{ form_widget(form) }}
             <input type="submit" value="Ajouter l'utilisateur" class="btn btn-outline-dark">

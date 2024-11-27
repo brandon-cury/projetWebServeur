@@ -140,6 +140,7 @@
     </div>
     <script>
         window.onload = ()=>{
+            //repondre a un commentaire
             document.querySelectorAll("[data-reply]").forEach(element =>{
                 element.addEventListener('click', ()=>{
                    document.querySelector('#comment_parentId').value = element.dataset.id;
@@ -147,7 +148,9 @@
                 });
             });
 
-            document.querySelectorAll("[data-update]").forEach(element =>{
+            //modifié un commentaire en cliquant sur modifié
+            let buttons_update = document.querySelectorAll("[data-update]");
+            buttons_update.forEach(element =>{
                 element.addEventListener('click', ()=>{
                     document.querySelector('#comment_updateId').value = element.dataset.id;
 
@@ -155,6 +158,19 @@
                     document.querySelector("a[href='#posterCommentaire']").click();
                 });
             });
+
+            //modifier un commentaire sans cliqué sur modifié
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            if(id){
+                console.log('aaaaaaaaaaaaaaa');
+                buttons_update.forEach(item =>{
+                    if(item.dataset.id == id){
+                        item.click();
+                    }
+
+                });
+            }
 
         };
     </script>

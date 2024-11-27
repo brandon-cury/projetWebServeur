@@ -4,8 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Basket;
 use App\Entity\Course;
-use App\Entity\Registration;
 use App\Repository\BasketRepository;
+use App\Repository\CourseRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -38,7 +38,7 @@ class BasketController extends AbstractController
         ]);
     }
     #[Route('/basket/{id}', name: 'app_basket_add')]
-    public function addCourseBasket(Course $course, Security $security, EntityManagerInterface $manager): Response
+    public function addCourseBasket(Course $course, CourseRepository $repository, Security $security, EntityManagerInterface $manager): Response
     {
 
         $basket = new Basket();
@@ -50,13 +50,8 @@ class BasketController extends AbstractController
                     'course' => $course->getId()
                 ]
             );
-            $findRegistration = $manager->getRepository(Registration::class)->findOneBy(
-                [
-                    'user' => $user->getId(),
-                    'course' => $course->getId()
-                ]
-            );
-            if($findBasket == null && $findRegistration == null){
+            $userEnrolledInCourse = $repository->isUserEnrolledInCourse($user, $course);
+            if($findBasket == null && !$userEnrolledInCourse){
                 $basket->setCourse($course)
                     ->setUser($user)
                     ->setCreatedAt(new \DateTimeImmutable())

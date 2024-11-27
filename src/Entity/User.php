@@ -78,11 +78,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Basket::class, mappedBy: 'user')]
     private Collection $baskets;
 
+
     /**
-     * @var Collection<int, Registration>
+     * @var Collection<int, Course>
      */
-    #[ORM\OneToMany(targetEntity: Registration::class, mappedBy: 'user')]
-    private Collection $registrations;
+    #[ORM\ManyToMany(targetEntity: Course::class, inversedBy: 'users')]
+    private Collection $course;
 
 
 
@@ -91,6 +92,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->comments = new ArrayCollection();
         $this->baskets = new ArrayCollection();
         $this->registrations = new ArrayCollection();
+        $this->course = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -390,31 +392,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, Registration>
+     * @return Collection<int, Course>
      */
-    public function getRegistrations(): Collection
+    public function getCourse(): Collection
     {
-        return $this->registrations;
+        return $this->course;
     }
 
-    public function addRegistration(Registration $registration): static
+    public function addCourse(Course $course): static
     {
-        if (!$this->registrations->contains($registration)) {
-            $this->registrations->add($registration);
-            $registration->setUser($this);
+        if (!$this->course->contains($course)) {
+            $this->course->add($course);
         }
 
         return $this;
     }
 
-    public function removeRegistration(Registration $registration): static
+    public function removeCourse(Course $course): static
     {
-        if ($this->registrations->removeElement($registration)) {
-            // set the owning side to null (unless already changed)
-            if ($registration->getUser() === $this) {
-                $registration->setUser(null);
-            }
-        }
+        $this->course->removeElement($course);
 
         return $this;
     }

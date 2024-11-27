@@ -10,8 +10,12 @@
             <thead>
             <tr>
                 <th>Image</th>
-                <th>Name</th>
-                <th>Description</th>
+                <th {% if categories.isSorted('name') %} class="sorted"{% endif %}>
+                    {{ knp_pagination_sortable(categories, 'Name', 'name') }}
+                </th>
+                <th {% if categories.isSorted('description') %} class="sorted"{% endif %}>
+                    {{ knp_pagination_sortable(categories, 'Description', 'description') }}
+                </th>
 
                 <th>Edit</th>
                 <th>Delete</th>
@@ -19,7 +23,7 @@
             </thead>
             <tbody>
             {% for categorie in categories %}
-                <tr>
+                <tr {% if loop.index is odd %}class="color"{% endif %}>
                     <td> <img  src="{{ (categorie.image != null)?asset('images/category/' ~ categorie.image): asset('images/category/default.jpg')}}" alt="{{ categorie.name }}"></td>
                     <td>{{ categorie.name }}</td>
                     <td>{{ categorie.description|u.truncate(100, '...', false) }}</td>
@@ -29,5 +33,11 @@
             {% endfor %}
             </tbody>
         </table>
+        {# Pagination #}
+        <div class="row my-4">
+            <div class="col-md-6 offset-3">
+                {{ knp_pagination_render(categories) }}
+            </div>
+        </div>
     </section>
 {% endblock %}

@@ -76,10 +76,10 @@ class Course
     private Collection $baskets;
 
     /**
-     * @var Collection<int, Registration>
+     * @var Collection<int, User>
      */
-    #[ORM\OneToMany(targetEntity: Registration::class, mappedBy: 'course')]
-    private Collection $registrations;
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'course')]
+    private Collection $users;
 
 
     public function __construct()
@@ -87,6 +87,7 @@ class Course
         $this->comments = new ArrayCollection();
         $this->baskets = new ArrayCollection();
         $this->registrations = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -346,30 +347,27 @@ class Course
     }
 
     /**
-     * @return Collection<int, Registration>
+     * @return Collection<int, User>
      */
-    public function getRegistrations(): Collection
+    public function getUsers(): Collection
     {
-        return $this->registrations;
+        return $this->users;
     }
 
-    public function addRegistration(Registration $registration): static
+    public function addUser(User $user): static
     {
-        if (!$this->registrations->contains($registration)) {
-            $this->registrations->add($registration);
-            $registration->setCourse($this);
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->addCourse($this);
         }
 
         return $this;
     }
 
-    public function removeRegistration(Registration $registration): static
+    public function removeUser(User $user): static
     {
-        if ($this->registrations->removeElement($registration)) {
-            // set the owning side to null (unless already changed)
-            if ($registration->getCourse() === $this) {
-                $registration->setCourse(null);
-            }
+        if ($this->users->removeElement($user)) {
+            $user->removeCourse($this);
         }
 
         return $this;

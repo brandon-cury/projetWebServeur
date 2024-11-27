@@ -4,17 +4,21 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Entity\Comment;
-use App\Entity\Course;
 use App\Form\CommentType;
 use App\Repository\CategoryRepository;
+use App\Repository\CommentRepository;
 use App\Repository\CourseRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class CourseController extends AbstractController
 {
@@ -26,7 +30,7 @@ class CourseController extends AbstractController
         $categorie = $categoryRepository->findOneBy(
             ['name'=> $category_slug]
         );
-        $limit = 10;
+        $limit = 9;
         $courses = $repository->paginateCourse($page, $limit, $categorie);
         if(!$categorie) $categorie = (new Category())->setName('Tous');
         $categories = $categoryRepository->findAll();
@@ -41,8 +45,9 @@ class CourseController extends AbstractController
 
 
     #[Route('/course/{slug}', name: 'app_course')]
-    public function course(string $slug, CourseRepository $repository, EntityManagerInterface $manager, Request $request, Security $security): Response
+    public function course(string $slug, CourseRepository $repository, EntityManagerInterface $manager, MailerInterface $mailer, CommentRepository $commentRepository, UserRepository $userRepository, Request $request, Security $security): Response
     {
+        $user = $security->getUser();
 
         $course = $repository->findOneBy(
             ['slug'=> $slug]
@@ -66,9 +71,18 @@ class CourseController extends AbstractController
         }
         //formulaire de commentaire
         $comment = new Comment();
+        if($request->query->get('id')){
+            $find_comment = $manager->getRepository(Comment::class)->find($request->query->get('id'));
+            if($find_comment){
+                if($user->getId() == $find_comment->getUser()->getId()){
+                    $comment = $find_comment;
+                }
+            }
+        }
+
+
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
-        $user = $security->getUser();
 
         if($form->isSubmitted() && $form->isValid()){
             if(!$user){
@@ -87,8 +101,8 @@ class CourseController extends AbstractController
                     ->setCourse($course)
                     ->setParent($parent)
                     ->setPublished(false)
-                    ->setSend(false);
-                    $comment->setUser($user);
+                    ->setSend(false)
+                    ->setUser($user);
                     $manager->persist($comment);
                     $manager->flush();
                     $this->addFlash('success', 'Votre commentaire à bien été enregistré');
@@ -107,6 +121,25 @@ class CourseController extends AbstractController
                     $this->addFlash('success', 'Votre commentaire à été modifié avec sucès');
                 }
             }
+
+            $teams = $userRepository->findTeams();
+            foreach ($teams as $team){
+                $email = (new Email())
+                    ->from($user->getEmail())
+                    ->to($team->getEmail());
+                    if(!$updateId){
+                        $url = $this->generateUrl('app_admin_one_comment', ['id' => $comment->getId()], UrlGeneratorInterface::ABSOLUTE_URL);
+                        $email->subject('Nouveau commentaire - WebStudent.com')
+                            ->html('<h1>Bonjour '. $team->getFirstName() .', le nouveau commentaire de'. $user->getFirstName()  .'attend votre approbation pour être publié.</h1> <a style="text-decoration: none" href="'. $url .'">gérer le commentaire</a><h2>Voici le commentaire :</h2> <div>'. $comment->getContent() .'</div>');
+                    }else{
+                        $url = $this->generateUrl('app_admin_one_comment', ['id' => $comment2->getId()], UrlGeneratorInterface::ABSOLUTE_URL);
+                        $email->subject('Commentaire Modifié - WebStudent.com')
+                            ->html('<h1>Bonjour '. $team->getFirstName() .'</h1><p>'. $user->getFirstName() . ' a bien modifié son commentaire. Son commmentaire attend votre approbation pour être publié.</p> <a style="text-decoration: none" href="'. $url .'">gérer le commentaire</a><h2>Voici le commentaire :</h2> <div>'. $comment2->getContent() .'</div>');
+                    }
+
+                $mailer->send($email);
+            }
+
             return $this->redirectToRoute('app_course', ['slug'=> $course->getSlug()]);
 
         }

@@ -2,16 +2,10 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Category;
-use App\Entity\Course;
+
 use App\Entity\News;
-use App\Form\CategoryType;
-use App\Form\CourseType;
 use App\Form\NewsType;
-use App\Repository\CategoryRepository;
-use App\Repository\CourseRepository;
 use App\Repository\NewsRepository;
-use Cocur\Slugify\Slugify;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,7 +24,7 @@ class AdminNewsController extends AbstractController
             ['created_at' => 'desc'],
         );
         $pagination = $paginator->paginate($news, $request->query->getInt('page', 1), 10);
-        return $this->render('admin/news.html.twig', [
+        return $this->render('admin/news/news.html.twig', [
             'news' => $pagination
         ]);
     }
@@ -51,7 +45,7 @@ class AdminNewsController extends AbstractController
             $this->addFlash('success', 'la nouvelle actualité a bien été ajouté !');
             return $this->redirectToRoute('app_admin_news');
         }
-        return $this->render('admin/newnews.html.twig', [
+        return $this->render('admin/news/newnews.html.twig', [
             'form'=> $form
         ]);
     }
@@ -74,7 +68,7 @@ class AdminNewsController extends AbstractController
             $this->addFlash('success', 'l\'actualité a bien été modifié !');
             return $this->redirectToRoute('app_admin_news');
         }
-        return $this->render('admin/editnews.html.twig', [
+        return $this->render('admin/news/editnews.html.twig', [
             'form'=> $form
         ]);
     }

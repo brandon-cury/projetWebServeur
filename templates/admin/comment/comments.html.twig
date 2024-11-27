@@ -1,0 +1,80 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}gestion des commentaire{% endblock %}
+
+{% block body %}
+    <section>
+            <h1 class="display-4">Gestion des commentaires</h1>
+            <table class="table table-hover my-5 table-striped">
+                <thead>
+                <tr>
+                    <th>Utilisateur</th>
+                    <th{% if comments.isSorted('content') %} class="sorted"{% endif %}>
+                        {{ knp_pagination_sortable(comments, 'Commentaire', 'content') }}
+                    </th>
+                    <th {% if comments.isSorted('parent_id') %} class="sorted"{% endif %}>
+                        {{ knp_pagination_sortable(comments, 'Reponse à', 'parent_id') }}
+
+                    </th>
+                    <th {% if comments.isSorted('course_id') %} class="sorted"{% endif %}>
+                        {{ knp_pagination_sortable(comments, 'Course', 'course_id') }}
+                    </th>
+                    <th {% if comments.isSorted('created_at') %} class="sorted"{% endif %}>
+                        {{ knp_pagination_sortable(comments, 'Created at', 'created_at') }}
+                    </th>
+
+                    <th {% if comments.isSorted('is_send') %} class="sorted"{% endif %}>
+                        {{ knp_pagination_sortable(comments, 'Send Message', 'is_send') }}
+
+                    </th>
+                    <th>Delete</th>
+                    <th {% if comments.isSorted('is_published') %} class="sorted"{% endif %}>
+                        {{ knp_pagination_sortable(comments, 'Published', 'is_published') }}
+
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for comment in comments %}
+                    <tr {% if loop.index is odd %}class="color"{% endif %}>
+                        <td> <img  src="{{ (comment.user.image != null)?asset('images/avatar/' ~ comment.user.image): asset('images/avatar/default.jpg')}}" alt="{{ comment.user.firstName }}"></td>
+                        <td>{{ comment.content|raw }}</td>
+                        <td>
+                            {% if not comment.parent %}
+
+                            {% else %}
+                                {{ comment.parent.content|raw }}
+                            {% endif %}
+                        </td>
+                        <td>{{ comment.course.name }}</td>
+                        <td>{{ comment.createdAt|date('d/m/y') }}</td>
+                        <td>
+                                {% if not comment.send %}
+                                    <a href="{{ path('app_admin_comment_send_message', {id: comment.id}) }}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="1rem" height="1rem" viewBox="0 0 24 24"><path fill="none" stroke="#4610da" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 12L3 20l3.563-8L3 4zM6.5 12H22"/></svg>
+                                    </a>
+                                {% else %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="1rem" height="1rem" viewBox="0 0 24 24"><path fill="none" stroke="#1d9a3d" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 12L3 20l3.563-8L3 4zM6.5 12H22"/></svg>
+                                {% endif %}
+                        </td>
+                        <td><a href="{{ path('app_admin_delcomment', {id: comment.id}) }}" class="text-danger"><i class="icofont-trash"></i></a></td>
+                        <td><a href="{{ path('app_admin_eyecomment', {id: comment.id}) }}">
+
+                                {% if comment.isPublished %}
+                                    <i class="icofont-eye text-success"></i>
+                                {% else %}
+                                    <i class="icofont-eye-blocked text-danger"></i>
+                                {% endif %}
+                            </a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {# Pagination #}
+        <div class="row my-4">
+            <div class="col-md-6 offset-3">
+                {{ knp_pagination_render(comments) }}
+            </div>
+        </div>
+    </section>
+{% endblock %}

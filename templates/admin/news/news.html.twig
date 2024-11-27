@@ -10,18 +10,26 @@
             <thead>
             <tr>
                 <th>Image</th>
-                <th>Name</th>
-                <th>Content</th>
-                <th>createdAt</th>
+                <th {% if news.isSorted('name') %} class="sorted"{% endif %}>
+                    {{ knp_pagination_sortable(news, 'Name', 'name') }}
+                </th>
+                <th {% if news.isSorted('content') %} class="sorted"{% endif %}>
+                    {{ knp_pagination_sortable(news, 'Content', 'content') }}
+                </th>
+                <th {% if news.isSorted('created_at') %} class="sorted"{% endif %}>
+                    {{ knp_pagination_sortable(news, 'created At', 'created_at') }}
+                </th>
 
                 <th>Edit</th>
                 <th>Delete</th>
-                <th>Published</th>
+                <th {% if news.isSorted('is_published') %} class="sorted"{% endif %}>
+                    {{ knp_pagination_sortable(news, 'Published', 'is_published') }}
+                </th>
             </tr>
             </thead>
             <tbody>
             {% for new in news %}
-                <tr>
+                <tr {% if loop.index is odd %}class="color"{% endif %}>
                     <td> <img  src="{{ (new.image != null)?asset('images/news/' ~ new.image): asset('images/news/default.png')}}" alt="{{ new.name }}"></td>
                     <td>{{ new.name }}</td>
                     <td>{{ new.content|raw }}</td>

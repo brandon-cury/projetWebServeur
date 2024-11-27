@@ -57,4 +57,12 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function findTeams() {
+        $qb = $this->createQueryBuilder('u')
+            ->where('u.roles LIKE :roleAdmin')
+            ->orWhere('u.roles LIKE :roleSuperAdmin')
+            ->setParameter('roleAdmin', '%"ROLE_ADMIN"%')
+            ->setParameter('roleSuperAdmin', '%"ROLE_SUPER_ADMIN"%');
+        return $qb->getQuery()->getResult();
+    }
 }

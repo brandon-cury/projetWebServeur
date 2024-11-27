@@ -9,8 +9,12 @@
         <table class="table table-hover my-5 table-striped">
             <thead>
             <tr>
-                <th>Name</th>
-                <th>Prerequis</th>
+                <th {% if levels.isSorted('name') %} class="sorted"{% endif %}>
+                    {{ knp_pagination_sortable(levels, 'Name', 'name') }}
+                </th>
+                <th {% if levels.isSorted('prerequisite') %} class="sorted"{% endif %}>
+                    {{ knp_pagination_sortable(levels, 'Prerequis', 'prerequisite') }}
+                </th>
 
                 <th>Edit</th>
                 <th>Delete</th>
@@ -18,7 +22,7 @@
             </thead>
             <tbody>
             {% for level in levels %}
-                <tr>
+                <tr {% if loop.index is odd %}class="color"{% endif %}>
                     <td>{{ level.name }}</td>
                     <td>{{ level.prerequisite|u.truncate(100, '...', false) }}</td>
                     <td><a href="{{ path('app_admin_editlevel', {id: level.id}) }}" ><i class="icofont-edit-alt"></i></a> </td>
@@ -27,5 +31,11 @@
             {% endfor %}
             </tbody>
         </table>
+        {# Pagination #}
+        <div class="row my-4">
+            <div class="col-md-6 offset-3">
+                {{ knp_pagination_render(levels) }}
+            </div>
+        </div>
     </section>
 {% endblock %}

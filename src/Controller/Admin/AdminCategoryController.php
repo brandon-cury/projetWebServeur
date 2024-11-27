@@ -10,6 +10,7 @@ use App\Repository\CategoryRepository;
 use App\Repository\CourseRepository;
 use Cocur\Slugify\Slugify;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,11 +19,12 @@ use Symfony\Component\Routing\Attribute\Route;
 class AdminCategoryController extends AbstractController
 {
     #[Route('/admin/category', name: 'app_admin_category')]
-    public function categories(CategoryRepository $repository): Response
+    public function categories(CategoryRepository $repository, PaginatorInterface $paginator, Request $request): Response
     {
         $categories = $repository->findCetegoriesNotDelete();
-        return $this->render('admin/category.html.twig', [
-            'categories' => $categories
+        $pagination = $paginator->paginate($categories, $request->query->getInt('page', 1), 15);
+        return $this->render('admin/category/category.html.twig', [
+            'categories' => $pagination
         ]);
     }
     #[Route('/admin/newcategory', name: 'app_admin_newcategory')]
@@ -39,7 +41,7 @@ class AdminCategoryController extends AbstractController
             $this->addFlash('success', 'votre categorie a bien été ajouté !');
             return $this->redirectToRoute('app_admin_category');
         }
-        return $this->render('admin/newcategory.html.twig', [
+        return $this->render('admin/category/newcategory.html.twig', [
             'form_category'=> $form
         ]);
     }
@@ -56,7 +58,7 @@ class AdminCategoryController extends AbstractController
             $this->addFlash('success', 'votre categorie a bien été modifié !');
             return $this->redirectToRoute('app_admin_category');
         }
-        return $this->render('admin/editcategory.html.twig', [
+        return $this->render('admin/category/editcategory.html.twig', [
             'form_category'=> $form
         ]);
     }

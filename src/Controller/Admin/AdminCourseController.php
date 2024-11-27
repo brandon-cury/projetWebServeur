@@ -10,6 +10,7 @@ use App\Repository\CategoryRepository;
 use App\Repository\CourseRepository;
 use Cocur\Slugify\Slugify;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,11 +24,12 @@ class AdminCourseController extends AbstractController
 
     }
     #[Route('/admin/course', name: 'app_admin_course')]
-    public function courses(CourseRepository $repository): Response
+    public function courses(CourseRepository $repository, PaginatorInterface $paginator, Request $request): Response
     {
         $courses = $repository->findCoursesNotDelete();
-        return $this->render('admin/course.html.twig', [
-            'courses' => $courses
+        $pagination = $paginator->paginate($courses, $request->query->getInt('page', 1), 15);
+        return $this->render('admin/course/course.html.twig', [
+            'courses' => $pagination
         ]);
     }
     #[Route('/admin/newcourse', name: 'app_admin_newcourse')]
@@ -48,7 +50,7 @@ class AdminCourseController extends AbstractController
             $this->addFlash('success', 'votre cours a été ajouté avec succès!');
             return $this->redirectToRoute('app_admin_course');
         }
-        return $this->render('admin/newcourse.html.twig', [
+        return $this->render('admin/course/newcourse.html.twig', [
             'form'=> $form
         ]);
     }
@@ -65,7 +67,7 @@ class AdminCourseController extends AbstractController
             $this->addFlash('success', 'votre cours a été modifié avec succès!');
             return $this->redirectToRoute('app_admin_course');
         }
-        return $this->render('admin/editcourse.html.twig', [
+        return $this->render('admin/course/editcourse.html.twig', [
             'form'=> $form,
 
         ]);

@@ -5,34 +5,40 @@
 {% block body %}
     <main class="container">
         <section id="posts">
+            <div class="card w-100">
+                <div class="card-body">
+                    <h1 class="card-title text-center text-danger">WebStudent.com</h1>
+
+                    <div class="card-text">
+                        <h4 class="text-center">site de cours en ligne</h4>
+                        Découvrez notre plateforme de cours en ligne, votre destination pour apprendre de nouvelles compétences et approfondir vos connaissances. Que vous soyez un professionnel cherchant à améliorer vos compétences ou un étudiant souhaitant élargir ses horizons, LearnOnline vous offre une large gamme de cours adaptés à vos besoins.
+                    </div>
+                </div>
+            </div>
+            <h1 class="display-6">Nos derniers cours</h1>
             <div class="row">
-                <div class="col-md-12">
-                    <h1 class="display-6">Nos derniers cours</h1>
 
-                    {% for course in courses %}
+                {% for course in courses %}
+                    <div class="col-md-4">
                         <div class="card mb-5">
-                            <div class="row g-0">
-                                <div class="col-md-4">
-                                    <img src="{{ (course.image != null)?course.image : asset('images/cours/default.jpg') }}" class="img-fluid rounded-start" alt="{{ course.name }}">
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="card-body">
-                                        <p>Categorie : {{ course.category.name }}</p>
+                            <img src="{{ (course.image != null)?course.image : asset('images/cours/default.jpg') }}" class="img-fluid rounded-start" alt="{{ course.name }}">
+                            <div class="card-body">
+                                <p>Categorie : {{ course.category.name }}</p>
 
-                                        <h5 class="card-title">{{ course.name|capitalize }}</h5>
+                                <h5 class="card-title">{{ course.name|capitalize }}</h5>
 
-                                        <p class="card-text">{{ course.smallDescription|u.truncate(100, '...', false) }}...</p>
+                                <p class="card-text">{{ course.smallDescription|u.truncate(100, '...', false) }}...</p>
 
-                                        <p>{{ course.createdAt|date('d/m/Y') }}</p>
+                                <p>{{ course.createdAt|date('d/m/Y') }}</p>
 
-                                        <p class="card-text"><a href="{{ path('app_course', {slug: course.slug}) }}" class="btn btn-secondary">Lire la suite</a></p>
-                                    </div>
-                                </div>
+                                <p class="card-text">
+                                    <a href="{{ path('app_course', {slug: course.slug}) }}" class="btn btn-danger">Lire la suite</a>
+                                </p>
                             </div>
                         </div>
-                    {% endfor %}
+                    </div>
+                {% endfor %}
 
-                </div>
             </div>
         </section>
     </main>

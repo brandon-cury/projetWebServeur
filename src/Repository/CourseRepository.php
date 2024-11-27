@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Category;
 use App\Entity\Course;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\Pagination\PaginationInterface;
@@ -64,5 +65,27 @@ class CourseRepository extends ServiceEntityRepository
                     ->orderBy('c.created_at', 'DESC')
                     ->getQuery()
                     ->getResult();
+    }
+
+    public function isUserEnrolledInCourse(User $user, Course $course): bool
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->innerJoin('c.users', 'u')
+            ->where('c.id = :courseId')
+            ->andWhere('u.id = :userId')
+            ->setParameter('courseId', $course->getId())
+            ->setParameter('userId', $user->getId());
+        $count = $qb->getQuery()->getSingleScalarResult();
+        return $count > 0;
+    }
+    public function getCoursesWithUserCount() {
+        $qb = $this->createQueryBuilder('c')
+            ->select('c', 'COUNT(u.id) as user_count')
+            ->innerJoin('c.users', 'u')
+            ->groupBy('c.id')
+            ->having('user_count > 0');
+        // Assurez-vous de n'obtenir que les cours avec des utilisateurs inscrits
+        return $qb->getQuery()->getResult();
     }
 }

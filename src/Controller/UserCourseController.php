@@ -6,7 +6,9 @@ use App\Entity\Basket;
 use App\Entity\Course;
 use App\Entity\Registration;
 use App\Repository\BasketRepository;
+use App\Repository\CourseRepository;
 use App\Repository\RegistrationRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,27 +17,19 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-class RegistrationCourseController extends AbstractController
+class UserCourseController extends AbstractController
 {
-    #[Route('registration/course/{id}', name: 'app_course_registration_add')]
-    public function addCourseRegistration(Basket $basket, Security $security, EntityManagerInterface $manager): Response
+    #[Route('user/course/{id}', name: 'app_course_registration_add')]
+    public function addCourseRegistration(Basket $basket, Security $security, CourseRepository $repository, EntityManagerInterface $manager): Response
     {
-        $registration = new Registration();
         $user = $security->getUser();
         if($user){
-            $findRegistration = $manager->getRepository(Registration::class)->findOneBy(
-                [
-                    'user' => $user->getId(),
-                    'course' => $basket->getCourse()->getId()
-                ]
-            );
-            if($findRegistration == null){
-                $registration->setCourse($basket->getCourse())
-                    ->setUser($user)
-                    ->setCreatedAt(new \DateTimeImmutable())
-                ;
-                $manager->persist($registration);
+            $userEnrolledInCourse = $repository->isUserEnrolledInCourse($user, $basket->getCourse());
+            if(!$userEnrolledInCourse){
+                $user->addCourse($basket->getCourse());
+                $manager->persist($user);
                 $manager->flush();
+
                 $this->addFlash('success', 'Vous êtes bien inscrit à la formation');
                 return $this->redirectToRoute('app_basket_del', ['id' => $basket->getId()]);
 
@@ -52,8 +46,8 @@ class RegistrationCourseController extends AbstractController
         return $this->redirectToRoute('app_basket');
     }
 
-    #[Route('registration/course', name: 'app_course_registration')]
-    public function registrationView(RegistrationRepository $repository, Security $security, PaginatorInterface $paginator, Request $request)
+    #[Route('user/course', name: 'app_course_registration')]
+    public function registrationView(Security $security, PaginatorInterface $paginator, Request $request)
     {
         $user = $security->getUser();
         if($user == null) {
@@ -61,25 +55,26 @@ class RegistrationCourseController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        $registration = $repository->findBy(['user'=> $user]);
-        $pagination = $paginator->paginate($registration, $request->query->getInt('page', 1), 10);
-        return $this->render('course/courses_registration.html.twig', [
-            'registration' => $pagination,
+        $courses = $user->getCourse();
+        $pagination = $paginator->paginate($courses, $request->query->getInt('page', 1), 10);
+        return $this->render('course/courses_user.html.twig', [
+            'courses' => $pagination,
         ]);
     }
-    #[Route('/registration/course/delete/{id}', name: 'app_registration_course_del')]
-    public function delNews(EntityManagerInterface $manager, Registration $registration, Security $security): Response
+    #[Route('user/course/delete/{id}', name: 'app_registration_course_del')]
+    public function delNews(Course $course, CourseRepository $repository, EntityManagerInterface $manager, Security $security): Response
     {
         $user = $security->getUser();
         if($user == null) {
             $this->addFlash('info', 'Veillez-vous identifier pour voir votre panier');
             return $this->redirectToRoute('app_login');
         }
-        if($registration->getUser() != $user){
+        if(!$repository->isUserEnrolledInCourse($user, $course)){
             $this->addFlash('danger', 'Suppression impossible!');
             return $this->redirectToRoute('app_course_registration');
         }
-        $manager->remove($registration);
+        $user->removeCourse($course);
+        $manager->persist($user);
         $manager->flush();
         $this->addFlash('success', 'Vous avez bien été supprimé de la formation !');
         return $this->redirectToRoute('app_course_registration');

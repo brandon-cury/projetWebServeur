@@ -27,7 +27,17 @@ class AdminUserController extends AbstractController
     {
         $users = $repository->findAll();
         $pagination = $paginator->paginate($users, $request->query->getInt('page', 1), 10);
-        return $this->render('admin/user.html.twig', [
+        return $this->render('admin/user/user.html.twig', [
+            'users' => $pagination
+        ]);
+    }
+
+    #[Route('/admin/user/teams', name: 'app_admin_user_teams')]
+    public function teams(UserRepository $repository, PaginatorInterface $paginator, Request $request): Response
+    {
+        $users = $repository->findTeams();
+        $pagination = $paginator->paginate($users, $request->query->getInt('page', 1), 10);
+        return $this->render('admin/user/team.html.twig', [
             'users' => $pagination
         ]);
     }
@@ -58,21 +68,23 @@ class AdminUserController extends AbstractController
                 return $this->redirectToRoute('app_admin_user');
             }
         }
-        return $this->render('admin/newuser.html.twig', [
+        return $this->render('admin/user/newuser.html.twig', [
             'form'=> $form
         ]);
     }
-    #[Route('/admin/editroleuser/{id}', name: 'app_admin_editroleuser')]
+    #[Route('/admin/super/editroleuser/{id}', name: 'app_admin_editroleuser')]
     public function editRoleUser(Request $request, EntityManagerInterface $manager, User $user): Response
     {
         $form = $this->createForm(RoleType::class, $user);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $roles = array_values($form->get("roles")->getData());
+            $user->setRoles($roles);
             $manager->flush();
             $this->addFlash('success', 'Le role a été modifié avec succès!');
             return $this->redirectToRoute('app_admin_user');
         }
-        return $this->render('admin/editroleuser.html.twig', [
+        return $this->render('admin/user/editroleuser.html.twig', [
             'form_roles'=> $form,
         ]);
     }

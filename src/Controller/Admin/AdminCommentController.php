@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Comment;
 use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,18 +18,26 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class AdminCommentController extends AbstractController
 {
     #[Route('/admin/comment', name: 'app_admin_comment')]
-    public function Comment(CommentRepository $repository): Response
+    public function comments(CommentRepository $repository, PaginatorInterface $paginator, Request $request): Response
     {
         $comments = $repository->findCommentsNotDelete();
-        return $this->render('admin/comment.html.twig', [
-            'comments' => $comments
+        $pagination = $paginator->paginate($comments, $request->query->getInt('page', 1), 15);
+        return $this->render('admin/comment/comments.html.twig', [
+            'comments' => $pagination
+        ]);
+    }
+    #[Route('/admin/comment/{id}', name: 'app_admin_one_comment')]
+    public function oneComment(Comment $comment, PaginatorInterface $paginator, Request $request): Response
+    {
+        return $this->render('admin/comment/comment.html.twig', [
+            'comment' => $comment
         ]);
     }
     #[Route('/admin/comment/message/{id}', name: 'app_admin_comment_send_message')]
     public function sendMessageComment(Request $request, EntityManagerInterface $manager, Comment $comment, MailerInterface $mailer, Security $security): Response
     {
         // Créez l'URL vers la page de votre site
-        $url = $this->generateUrl('app_course', ['slug' => $comment->getCourse()->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL);
+        $url = $this->generateUrl('app_course', ['slug' => $comment->getCourse()->getSlug(), 'id'=> $comment->getId()], UrlGeneratorInterface::ABSOLUTE_URL);
         $user = $security->getUser();
         $email = (new Email())
             ->from($user->getEmail())
@@ -58,7 +67,7 @@ class AdminCommentController extends AbstractController
             ->to($comment->getUser()->getEmail());
 
         // Créez l'URL vers la page de votre site
-         $url = $this->generateUrl('app_course', ['slug' => $comment->getCourse()->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL);
+         $url = $this->generateUrl('app_course', ['slug' => $comment->getCourse()->getSlug(), 'id'=> $comment->getId()], UrlGeneratorInterface::ABSOLUTE_URL);
 
             if($comment->isPublished()){
                 $email->subject('Commentaire publié - WebStudent.com')

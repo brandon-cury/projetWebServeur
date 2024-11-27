@@ -6,6 +6,7 @@ use App\Entity\Level;
 use App\Form\LevelType;
 use App\Repository\LevelRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,11 +15,12 @@ use Symfony\Component\Routing\Attribute\Route;
 class AdminLevelController extends AbstractController
 {
     #[Route('/admin/level', name: 'app_admin_level')]
-    public function level(LevelRepository $repository): Response
+    public function level(LevelRepository $repository, PaginatorInterface $paginator, Request $request): Response
     {
         $levels = $repository->findLevelsNotDelete();
-        return $this->render('admin/level.html.twig', [
-            'levels' => $levels
+        $pagination = $paginator->paginate($levels, $request->query->getInt('page', 1), 15);
+        return $this->render('admin/level/level.html.twig', [
+            'levels' => $pagination
         ]);
     }
     #[Route('/admin/newlevel', name: 'app_admin_newlevel')]
@@ -33,7 +35,7 @@ class AdminLevelController extends AbstractController
             $this->addFlash('success', 'votre niveau a bien été ajouté !');
             return $this->redirectToRoute('app_admin_level');
         }
-        return $this->render('admin/newlevel.html.twig', [
+        return $this->render('admin/level/newlevel.html.twig', [
             'form_level'=> $form
         ]);
     }
@@ -48,7 +50,7 @@ class AdminLevelController extends AbstractController
             $this->addFlash('success', 'votre niveau a bien été modifié !');
             return $this->redirectToRoute('app_admin_level');
         }
-        return $this->render('admin/editlevel.html.twig', [
+        return $this->render('admin/level/editlevel.html.twig', [
             'form_level'=> $form
         ]);
     }
