@@ -25,13 +25,14 @@ class CourseController extends AbstractController
     #[Route('/courses/{category_slug?}', name: 'app_courses')]
     public function courses(CourseRepository $repository, Request $request, ?string $category_slug, CategoryRepository $categoryRepository): Response
     {
+
         $page = $request->query->getInt('page', 1);
         $category_url = $request->query->getInt('category');
         $categorie = $categoryRepository->findOneBy(
             ['slug'=> $category_slug]
         );
         $limit = 9;
-        $courses = $repository->paginateCourse($page, $limit, $categorie);
+        $courses = $repository->paginateCourse($page, $limit, $categorie, $request->query->get('search'));
         if(!$categorie) $categorie = (new Category())->setName('Tous');
         $categories = $categoryRepository->findCetegoriesNotDelete();
         $categories[] = (new Category())->setName('Tous');

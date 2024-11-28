@@ -45,8 +45,9 @@ class CourseRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-    public function paginateCourse(int $page, int $limit, Category $category = null) : PaginationInterface
+    public function paginateCourse(int $page, int $limit, Category $category = null, ?string $search) : PaginationInterface
     {
+        /*
         if($category) {
             $query = $this->createQueryBuilder('c')
                 ->where('c.name IS NOT NULL AND c.is_published = true')
@@ -62,6 +63,21 @@ class CourseRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->getResult();
         }
+        return $this->paginator->paginate($query, $page, $limit);
+        */
+
+        $queryBuilder = $this->createQueryBuilder('c')
+            ->where('c.name IS NOT NULL AND c.is_published = true');
+        if (!is_null($category)) {
+            $queryBuilder->andWhere('c.category = :category')
+                ->setParameter('category', $category);
+        }
+        if (!is_null($search) && $search !== '') {
+            $queryBuilder->andWhere('c.name LIKE :search OR c.small_description LIKE :search OR c.full_description LIKE :search')
+                ->setParameter('search', '%' . $search . '%');
+        }
+        $queryBuilder->orderBy('c.created_at', 'DESC');
+        $query = $queryBuilder->getQuery();
         return $this->paginator->paginate($query, $page, $limit);
 
     }
