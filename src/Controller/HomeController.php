@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class HomeController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
-    public function home(CourseRepository $repository, NewsRepository $newsRepository, MailerInterface $mailer): Response
+    public function home(CourseRepository $repository, NewsRepository $newsRepository): Response
     {
         $courses = $repository->findBy(
             ['is_published'=> true],
@@ -25,14 +25,6 @@ class HomeController extends AbstractController
             ['created_at' => 'DESC'],
             4
         );
-        $email = (new Email())
-            ->from('hello@example.com')
-            ->to('you@example.com')
-            ->subject('Time for Symfony Mailer!')
-            ->text('Sending emails is fun again!')
-            ->html('<p>See Twig integration for better HTML integration!</p>');
-
-        $mailer->send($email);
 
         return $this->render('home/index.html.twig', [
             'courses' => $courses,

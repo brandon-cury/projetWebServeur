@@ -4,7 +4,14 @@
 
 {% block body %}
         <div class="container">
-                {{ form(form) }}
+                <div class="row mt-5">
+                        <div class="col-md-4">
+                                <img class="rounded-circle" src="{{ (app.user.image != null)?asset('images/avatar/' ~ app.user.image) : asset('images/avatar/default.jpg') }}" alt="{{ app.user.firstName }}" >
+                        </div>
+                        <div class="col-md-8">
+                                {{ form(form) }}
+                        </div>
+                </div>
         </div>
 
 

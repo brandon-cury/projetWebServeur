@@ -97,6 +97,17 @@ class AdminCourseController extends AbstractController
                 unlink($programPath);
             }
         }
+        //supprimer les utilisateurs du cours
+        $courses_users = $course->getUsers();
+        foreach ($courses_users as $user){
+            $user->removeCourse($course);
+        }
+        //supprimer les paniers lié au cours
+        $baskets = $course->getBaskets();
+        foreach ($baskets as $basket){
+            $manager->remove($basket);
+        }
+        $manager->flush();
         //supprimer en DB sans cassure vu que la table course est lié au commentaire, level...
         $course->setName(null)
             ->setCategory(null)
