@@ -7,7 +7,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
+#[UniqueEntity(
+    fields: 'name',
+    message: 'le titre de l\'actualité existe déjà.'
+)]
 #[ORM\Entity(repositoryClass: NewsRepository::class)]
 #[Vich\Uploadable]
 class News

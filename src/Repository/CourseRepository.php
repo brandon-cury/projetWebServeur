@@ -47,7 +47,7 @@ class CourseRepository extends ServiceEntityRepository
 
     public function paginateCourse(int $page, int $limit, Category $category = null) : PaginationInterface
     {
-        if($category->getSlug()) {
+        if($category) {
             $query = $this->createQueryBuilder('c')
                 ->where('c.name IS NOT NULL AND c.is_published = true')
                 ->andWhere('c.category = :category')

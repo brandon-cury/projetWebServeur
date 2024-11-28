@@ -116,13 +116,13 @@ class Course
         message: 'La categorie ne peut pas être vide',
     )]
     #[ORM\ManyToOne(inversedBy: 'courses')]
-    private ?category $category = null;
+    private ?Category $category = null;
 
     #[Assert\NotBlank(
         message: 'Le niveau ne peut pas être vide',
     )]
     #[ORM\ManyToOne(inversedBy: 'courses')]
-    private ?level $level = null;
+    private ?Level $level = null;
 
     /**
      * @var Collection<int, Comment>
@@ -315,24 +315,24 @@ class Course
         return $this->programFile;
     }
 
-    public function getCategory(): ?category
+    public function getCategory(): ?Category
     {
         return $this->category;
     }
 
-    public function setCategory(?category $category): static
+    public function setCategory(?Category $category): static
     {
         $this->category = $category;
 
         return $this;
     }
 
-    public function getLevel(): ?level
+    public function getLevel(): ?Level
     {
         return $this->level;
     }
 
-    public function setLevel(?level $level): static
+    public function setLevel(?Level $level): static
     {
         $this->level = $level;
 

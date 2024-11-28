@@ -47,6 +47,7 @@ class NewsRepository extends ServiceEntityRepository
     {
         return $this->paginator->paginate(
             $this->createQueryBuilder('r')
+                ->where('r.is_published = true')
                 ->orderBy('r.created_at', 'DESC'),
             $page,
             $limit

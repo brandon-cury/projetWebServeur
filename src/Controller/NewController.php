@@ -14,7 +14,7 @@ class NewController extends AbstractController
     public function news(NewsRepository $repository, Request $request): Response
     {
         $page = $request->query->getInt('page', 1);
-        $limit = 9;
+        $limit = 8;
         $news = $repository->paginateNew($page, $limit);
         return $this->render('new/news.html.twig', [
             'news' => $news
