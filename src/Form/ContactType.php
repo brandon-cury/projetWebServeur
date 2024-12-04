@@ -41,7 +41,7 @@ class ContactType extends AbstractType
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('u')
                         ->where('u.roles LIKE :role')
-                        ->setParameter('role', '%ROLE_ADMIN%'); },
+                        ->setParameter('role', '%ADMIN%'); },
                 'choice_label' => 'firstName',
                 'label' => 'Choisir un administrateur',
                 'placeholder' => 'Sélectionner un administrateur',

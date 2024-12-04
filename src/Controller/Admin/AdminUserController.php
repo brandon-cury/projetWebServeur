@@ -10,6 +10,7 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -78,13 +79,20 @@ class AdminUserController extends AbstractController
     #[Route('/admin/super/editroleuser/{id}', name: 'app_admin_editroleuser')]
     public function editRoleUser(Request $request, EntityManagerInterface $manager, User $user): Response
     {
-        $form = $this->createForm(RoleType::class, $user);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $roles = array_values($form->get("roles")->getData());
-            $user->setRoles($roles);
-            $manager->flush();
-            $this->addFlash('success', 'Le role a été modifié avec succès!');
+        if($user->getRoles()[0] != 'ROLE_SUPER_ADMIN'){
+            $form = $this->createForm(RoleType::class, $user);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+
+                $roles = array_values($form->get("roles")->getData());
+                $user->setRoles($roles);
+                $manager->flush();
+                $this->addFlash('success', 'Le role a été modifié avec succès!');
+                return $this->redirectToRoute('app_admin_user');
+
+            }
+        }else{
+            $this->addFlash('info', 'vous ne pouvez pas modifier le role du super admin');
             return $this->redirectToRoute('app_admin_user');
         }
         return $this->render('admin/user/editroleuser.html.twig', [
@@ -92,10 +100,14 @@ class AdminUserController extends AbstractController
         ]);
     }
     #[Route('/admin/eyeuser/{id}', name: 'app_admin_eyeuser')]
-    public function eyeCourse(Request $request, EntityManagerInterface $manager, User $user): Response
+    public function eyeUser(Request $request, EntityManagerInterface $manager, User $user): Response
     {
-        $user->setDisabled(!$user->isDisabled());
-        $manager->flush();
+        if($user->getRoles()[0] != 'ROLE_SUPER_ADMIN'){
+            $user->setDisabled(!$user->isDisabled());
+            $manager->flush();
+        }else{
+            $this->addFlash('info', 'vous ne pouvez pas modifier le role du super admin');
+        }
         return $this->redirectToRoute('app_admin_user');
     }
 

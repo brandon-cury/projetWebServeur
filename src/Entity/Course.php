@@ -35,7 +35,7 @@ class Course
         maxMessage: 'Le titre ne doit pas dépasser {{ limit }} caractères',
     )]
     #[Assert\Regex(
-        pattern: "/^[a-zA-ZÀ-ÿ\s']+$/",
+        pattern: "/^[a-zA-ZÀ-ÿ\s'.]+$/",
         message: 'Le titre du cours se compose de caractères non autorisés',
     )]
     #[ORM\Column(length: 120, nullable: true)]

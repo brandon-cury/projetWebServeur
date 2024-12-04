@@ -50,15 +50,29 @@
                             {{ user.roles[0] }}
                         </td>
 
-                        <td><a href="{{ path('app_admin_editroleuser', {id: user.id}) }}"><i class="icofont-edit-alt"></i></a></td>
-                        <td><a href="{{ path('app_admin_eyeuser', {id: user.id}) }}">
+                        <td>
+                            {% if user.roles[0] == 'ROLE_SUPER_ADMIN' %}
+                                <i class="icofont-edit-alt"></i>
+                            {% else %}
+                                <a href="{{ path('app_admin_editroleuser', {id: user.id}) }}">
+                                    <i class="icofont-edit-alt"></i>
+                                </a>
+                            {% endif %}
+                        </td>
+                        <td>
 
-                                {% if user.isDisabled %}
-                                    <i class="icofont-eye text-danger"></i>
+                                {% if user.roles[0] == 'ROLE_SUPER_ADMIN' %}
+                                    <i class="icofont-eye text-dark"></i>
                                 {% else %}
-                                    <i class="icofont-eye-blocked text-success"></i>
+                                    <a href="{{ path('app_admin_eyeuser', {id: user.id}) }}">
+                                        {% if user.isDisabled %}
+                                            <i class="icofont-eye text-danger"></i>
+                                        {% else %}
+                                            <i class="icofont-eye-blocked text-success"></i>
+                                        {% endif %}
+                                    </a>
                                 {% endif %}
-                            </a></td>
+                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>
